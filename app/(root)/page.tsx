@@ -1,7 +1,13 @@
+import { Container, Typography, Box } from '@mui/material';
+
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center h-lvh md:flex-row ">
-      <p>Hello World</p>
-    </div>
+    <Container maxWidth="lg">
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+        <Typography variant="h3" component="h1">
+          Hello World
+        </Typography>
+      </Box>
+    </Container>
   );
 }

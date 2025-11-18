@@ -1,79 +1,53 @@
 "use client";
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../../ui/card";
-import { Label } from "../../ui/label";
-import { Input } from "../../ui/input";
-import { Button } from "../../ui/button";
-import { MdFiberSmartRecord } from "react-icons/md";
+import { Card, CardContent, TextField, Button, Typography, Box } from '@mui/material';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 const RegistrationForm = () => {
   return (
-    <div className="flex flex-col p-10">
-      <Card className="bg-gray-50 shadow-2xl border border-gray-200 p-5 m-5">
-        <CardHeader className="mt-10">
-          <div className="flex flex-row justify-between items-center gap-5">
-            <div>
-              <CardTitle>
-                <p className="text-4xl font-extrabold text-amber-600 mb-5">
-                  Create Your Account
-                </p>
-              </CardTitle>
-              <CardDescription>
-                <p className="text-gray-500">
-                  This Application will help you to design sophisticated Outcome
-                  Based Education Curriculum for colloge
-                </p>
-              </CardDescription>
-            </div>
-            <MdFiberSmartRecord className="w-[120px] h-[120px] text-gray-200" />
-          </div>
-          <div></div>
-        </CardHeader>
+    <Box sx={{ p: 5 }}>
+      <Card elevation={8} sx={{ p: 3, m: 2 }}>
+        <Box sx={{ mt: 5, mb: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
+            <Box>
+              <Typography variant="h4" fontWeight="bold" color="primary" gutterBottom>
+                Create Your Account
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                This Application will help you to design sophisticated Outcome Based Education Curriculum for colloge
+              </Typography>
+            </Box>
+            <FiberManualRecordIcon sx={{ fontSize: 120, color: 'grey.300' }} />
+          </Box>
+        </Box>
         <CardContent>
-          <div className="flex flex-col gap-2 min-w-full mb-10">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1">
-                <Label className="text-xl font-extrabold text-gray-600">
-                  Email
-                </Label>
-                <Input
-                  type="email"
-                  className="h-12 ring-0 border-1 text-lg border-gray-400 focus-visible:ring-0 focus-visible:shadow-lg "
-                  placeholder="youremail@company.com"
-                ></Input>
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <Label className="text-xl font-extrabold text-gray-600">
-                  Password
-                </Label>
-                <Input
-                  type="password"
-                  className="h-12 ring-0 border-1 border-gray-400 focus-visible:ring-0 focus-visible:shadow-lg"
-                ></Input>
-              </div>
-            </div>
-
-            <div className="flex flex-row w-full items-end mt-10">
-              <Button
-                variant={"outline"}
-                className="w-full bg-amber-50 border-2 border-amber-600 shadow-lg rounded-xl h-15"
-              >
-                <p className="text text-2xl font-bold text-amber-700">
-                  Register
-                </p>
-              </Button>
-            </div>
-          </div>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 5 }}>
+            <TextField
+              label="Email"
+              type="email"
+              placeholder="youremail@company.com"
+              fullWidth
+              variant="outlined"
+            />
+            <TextField
+              label="Password"
+              type="password"
+              fullWidth
+              variant="outlined"
+            />
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              fullWidth
+              sx={{ mt: 3, borderRadius: 3, py: 1.5, borderWidth: 2 }}
+            >
+              <Typography variant="h6" fontWeight="bold">Register</Typography>
+            </Button>
+          </Box>
         </CardContent>
       </Card>
-    </div>
+    </Box>
   );
 };
 export default RegistrationForm;

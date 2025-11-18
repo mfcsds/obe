@@ -1,18 +1,20 @@
 import LoginForm from "@/components/form/login/LoginForm";
-import React from "react";
-import { MdFiberSmartRecord } from "react-icons/md";
+import { Box, Typography } from '@mui/material';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 const SignInPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-lvh md:flex-row ">
-      <div className="flex flex-col w-full md:w-8/12 items-center p-4 justify-center md:p-0 h-screen">
-        <MdFiberSmartRecord className="w-[200px] h-[200px] text-amber-500" />
-        <p className="text-gray-400 ">AI Based Curriculum Design</p>
-      </div>
-      <div className="flex flex-col w-full bg-white p-4 md:bg-gray-100 md:p-0 md:w-4/12 items-center h-full justify-center">
-        <LoginForm></LoginForm>
-      </div>
-    </div>
+    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, minHeight: '100vh' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', md: '66.67%' }, alignItems: 'center', justifyContent: 'center', p: { xs: 2, md: 0 } }}>
+        <FiberManualRecordIcon sx={{ fontSize: 200, color: 'primary.main' }} />
+        <Typography variant="body1" color="text.secondary">
+          AI Based Curriculum Design
+        </Typography>
+      </Box>
+      <Box sx={{ display: 'flex', width: { xs: '100%', md: '33.33%' }, alignItems: 'center', justifyContent: 'center', bgcolor: { xs: 'background.paper', md: 'grey.100' }, p: { xs: 2, md: 0 } }}>
+        <LoginForm />
+      </Box>
+    </Box>
   );
 };
 

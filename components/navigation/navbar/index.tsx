@@ -1,19 +1,45 @@
-import React from "react";
-import { RxAvatar } from "react-icons/rx";
+import { AppBar, Toolbar, Box, Typography, Avatar, IconButton, Breadcrumbs, Link } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-const NavBar = () => {
+interface NavBarProps {
+  onMenuClick: () => void;
+  sidebarOpen: boolean;
+}
+
+const NavBar = ({ onMenuClick, sidebarOpen }: NavBarProps) => {
   return (
-    <nav>
-      <div className="flex flex-row-reverse w-full py-1 gap-2 items-center px-5 ">
-        <div className="flex flex-col ">
-          <p className="text-balance font-extrabold text-lg">
-            Muhamad Fathurahman
-          </p>
-          <p className="text-sm font-light text-gray-700">Sekretaris Prodi</p>
-        </div>
-        <RxAvatar className="w-10 h-10 text-gray-400"></RxAvatar>
-      </div>
-    </nav>
+    <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {!sidebarOpen && (
+            <IconButton onClick={onMenuClick}>
+              <MenuIcon />
+            </IconButton>
+          )}
+          <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
+            <Link underline="hover" color="inherit" href="#">
+              Dashboard
+            </Link>
+            <Typography color="text.primary">Home</Typography>
+          </Breadcrumbs>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Avatar sx={{ bgcolor: 'grey.400' }}>
+            <AccountCircleIcon />
+          </Avatar>
+          <Box>
+            <Typography variant="body1" fontWeight="bold">
+              Muhamad Fathurahman
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Sekretaris Prodi
+            </Typography>
+          </Box>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 
