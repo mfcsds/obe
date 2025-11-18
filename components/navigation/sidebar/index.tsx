@@ -2,10 +2,6 @@
 
 import {
   Calendar,
-  Inbox,
-  Search,
-  Settings,
-  Book,
   LayoutDashboard,
   User,
   Contact,
@@ -30,6 +26,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { MdFiberSmartRecord } from "react-icons/md";
 import {
@@ -61,6 +59,7 @@ const menu_civitas_akademic = [
   { title: "Dosen", url: "#", icon: Contact },
   { title: "Mahasiswa", url: "#", icon: User },
   { title: "Tenaga Pendidikan", url: "#", icon: UserCog },
+  { title: "Alumni", url: "#", icon: UserCog },
 ];
 
 // Surat dan Administrasi
@@ -116,7 +115,7 @@ export function AppSidebar() {
                   {menu_layanan_akademic.map((item) => (
                     <SidebarMenuItem
                       key={item.title}
-                      className="hover:bg-violet-900 rounded-lg hover:text-white "
+                      className="hover:bg-violet-100 rounded-lg hover:text-gray-800 hover:border hover:border-violet-800 "
                     >
                       <SidebarMenuButton asChild>
                         <a href={item.url}>
@@ -199,9 +198,9 @@ export function AppSidebar() {
             </SidebarGroupLabel>
             <CollapsibleContent>
               <SidebarGroupContent>
-                <SidebarMenu>
+                <SidebarMenuSub>
                   {menu_keuangan.map((item) => (
-                    <SidebarMenuItem
+                    <SidebarMenuSubItem
                       key={item.title}
                       className="hover:bg-violet-900 rounded-lg hover:text-white "
                     >
@@ -211,9 +210,9 @@ export function AppSidebar() {
                           <span className="text-sm">{item.title}</span>
                         </a>
                       </SidebarMenuButton>
-                    </SidebarMenuItem>
+                    </SidebarMenuSubItem>
                   ))}
-                </SidebarMenu>
+                </SidebarMenuSub>
               </SidebarGroupContent>
             </CollapsibleContent>
           </SidebarGroup>
