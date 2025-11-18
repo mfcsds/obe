@@ -46,7 +46,7 @@ const menuItems = [
 ];
 
 const menuLayananAkademik = [
-  { title: "Kurikulum", icon: MenuBook, url: "#" },
+  { title: "Kurikulum", icon: MenuBook, url: "/kurikulum" },
   { title: "Jadwal Perkuliahan", icon: CalendarMonth, url: "#" },
   { title: "Kartu Rencana Semester", icon: Note, url: "#" },
   { title: "Kartu Hasil Studi", icon: Description, url: "#" },
@@ -123,7 +123,7 @@ export function MuiSidebar({ open, onClose }: MuiSidebarProps) {
         <Collapse in={openAkademik} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             {menuLayananAkademik.map((item) => (
-              <ListItemButton key={item.title} sx={{ pl: 4 }}>
+              <ListItemButton key={item.title} sx={{ pl: 4 }} component={Link} href={item.url}>
                 <ListItemIcon>
                   <item.icon fontSize="small" />
                 </ListItemIcon>
