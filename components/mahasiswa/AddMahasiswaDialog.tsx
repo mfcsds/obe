@@ -11,7 +11,6 @@ import {
   StepLabel,
   Box,
   TextField,
-  Grid,
   MenuItem,
   FormControl,
   InputLabel,
@@ -38,9 +37,15 @@ export default function AddMahasiswaDialog({ open, onClose }: AddMahasiswaDialog
     setActiveStep(0);
   };
 
+  const handleSaveDraft = () => {
+    onClose();
+    setActiveStep(0);
+    // TODO: Implement actual draft saving logic
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>Tambah Data Mahasiswa</DialogTitle>
+    <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
+      <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>Tambah Data Mahasiswa</DialogTitle>
       <DialogContent dividers>
         <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
           {steps.map((label) => (
@@ -51,30 +56,34 @@ export default function AddMahasiswaDialog({ open, onClose }: AddMahasiswaDialog
         </Stepper>
 
         {activeStep === 0 && (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 3 }}>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Typography variant="h6" gutterBottom color="primary">Identitas Akademik</Typography>
+              <Divider sx={{ mb: 2 }} />
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
               <TextField fullWidth label="Nama Lengkap (Sesuai KTP)" required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="NIM" required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Angkatan" type="number" required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <FormControl fullWidth required>
                 <InputLabel>Program Studi</InputLabel>
-                <Select label="Program Studi">
+                <Select label="Program Studi" defaultValue="">
                   <MenuItem value="Teknik Informatika">Teknik Informatika</MenuItem>
                   <MenuItem value="Sistem Informasi">Sistem Informasi</MenuItem>
                   <MenuItem value="Manajemen Informatika">Manajemen Informatika</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <FormControl fullWidth required>
                 <InputLabel>Jalur Masuk</InputLabel>
-                <Select label="Jalur Masuk">
+                <Select label="Jalur Masuk" defaultValue="">
                   <MenuItem value="SNBP">SNBP</MenuItem>
                   <MenuItem value="SNBT">SNBT</MenuItem>
                   <MenuItem value="Mandiri">Mandiri</MenuItem>
@@ -82,11 +91,11 @@ export default function AddMahasiswaDialog({ open, onClose }: AddMahasiswaDialog
                   <MenuItem value="Alih Jenjang">Alih Jenjang</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <FormControl fullWidth required>
                 <InputLabel>Status Mahasiswa</InputLabel>
-                <Select label="Status Mahasiswa">
+                <Select label="Status Mahasiswa" defaultValue="">
                   <MenuItem value="Aktif">Aktif</MenuItem>
                   <MenuItem value="Cuti">Cuti</MenuItem>
                   <MenuItem value="Tidak Aktif">Tidak Aktif</MenuItem>
@@ -94,34 +103,38 @@ export default function AddMahasiswaDialog({ open, onClose }: AddMahasiswaDialog
                   <MenuItem value="DO">DO</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Kelas" />
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         )}
 
         {activeStep === 1 && (
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 3 }}>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Typography variant="h6" gutterBottom color="primary">Data Pribadi</Typography>
+              <Divider sx={{ mb: 2 }} />
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <FormControl fullWidth required>
                 <InputLabel>Jenis Kelamin</InputLabel>
-                <Select label="Jenis Kelamin">
+                <Select label="Jenis Kelamin" defaultValue="">
                   <MenuItem value="L">Laki-laki</MenuItem>
                   <MenuItem value="P">Perempuan</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Tempat Lahir" required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Tanggal Lahir" type="date" InputLabelProps={{ shrink: true }} required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <FormControl fullWidth required>
                 <InputLabel>Agama</InputLabel>
-                <Select label="Agama">
+                <Select label="Agama" defaultValue="">
                   <MenuItem value="Islam">Islam</MenuItem>
                   <MenuItem value="Kristen">Kristen</MenuItem>
                   <MenuItem value="Katolik">Katolik</MenuItem>
@@ -130,137 +143,162 @@ export default function AddMahasiswaDialog({ open, onClose }: AddMahasiswaDialog
                   <MenuItem value="Konghucu">Konghucu</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Kewarganegaraan" defaultValue="Indonesia" required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Nomor KTP" />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Nomor KK" />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="NISN" />
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         )}
 
         {activeStep === 2 && (
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 3 }}>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Typography variant="h6" gutterBottom color="primary">Kontak & Alamat</Typography>
+              <Divider sx={{ mb: 2 }} />
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Email Institusi" type="email" required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Email Pribadi" type="email" />
-            </Grid>
-            <Grid item xs={12}>
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
               <TextField fullWidth label="Nomor HP / WhatsApp" required />
-            </Grid>
-            <Grid item xs={12}>
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
               <TextField fullWidth label="Alamat Domisili" multiline rows={3} required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Kota / Kabupaten" required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Provinsi" required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Kode Pos" />
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         )}
 
         {activeStep === 3 && (
           <Box>
-            <Typography variant="h6" gutterBottom>Data Ayah</Typography>
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid item xs={12}>
-                <TextField fullWidth label="Nama Ayah" required />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField fullWidth label="Pendidikan Ayah" />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField fullWidth label="Pekerjaan Ayah" />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField fullWidth label="Penghasilan Ayah" />
-              </Grid>
-            </Grid>
+            <Box sx={{ mb: 4, p: 2, border: '1px solid #e0e0e0', borderRadius: 2 }}>
+              <Typography variant="h6" gutterBottom color="primary">Data Ayah</Typography>
+              <Divider sx={{ mb: 2 }} />
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 3 }}>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <TextField fullWidth label="Nama Ayah" required />
+                </Box>
+                <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
+                  <TextField fullWidth label="Pendidikan Ayah" />
+                </Box>
+                <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
+                  <TextField fullWidth label="Pekerjaan Ayah" />
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <TextField fullWidth label="Penghasilan Ayah" />
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <TextField fullWidth label="Nomor HP Ayah" />
+                </Box>
+              </Box>
+            </Box>
 
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h6" gutterBottom>Data Ibu</Typography>
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid item xs={12}>
-                <TextField fullWidth label="Nama Ibu" required />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField fullWidth label="Pendidikan Ibu" />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField fullWidth label="Pekerjaan Ibu" />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField fullWidth label="Penghasilan Ibu" />
-              </Grid>
-            </Grid>
+            <Box sx={{ mb: 4, p: 2, border: '1px solid #e0e0e0', borderRadius: 2 }}>
+              <Typography variant="h6" gutterBottom color="primary">Data Ibu</Typography>
+              <Divider sx={{ mb: 2 }} />
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 3 }}>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <TextField fullWidth label="Nama Ibu" required />
+                </Box>
+                <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
+                  <TextField fullWidth label="Pendidikan Ibu" />
+                </Box>
+                <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
+                  <TextField fullWidth label="Pekerjaan Ibu" />
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <TextField fullWidth label="Penghasilan Ibu" />
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <TextField fullWidth label="Nomor HP Ibu" />
+                </Box>
+              </Box>
+            </Box>
 
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h6" gutterBottom>Data Wali (Opsional)</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField fullWidth label="Nama Wali" />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField fullWidth label="Hubungan dengan Wali" />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField fullWidth label="Pekerjaan Wali" />
-              </Grid>
-            </Grid>
+            <Box sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 2 }}>
+              <Typography variant="h6" gutterBottom color="primary">Data Wali (Opsional)</Typography>
+              <Divider sx={{ mb: 2 }} />
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 3 }}>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <TextField fullWidth label="Nama Wali" />
+                </Box>
+                <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
+                  <TextField fullWidth label="Hubungan dengan Wali" />
+                </Box>
+                <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
+                  <TextField fullWidth label="Pekerjaan Wali" />
+                </Box>
+              </Box>
+            </Box>
           </Box>
         )}
 
         {activeStep === 4 && (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 3 }}>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Typography variant="h6" gutterBottom color="primary">Riwayat Pendidikan</Typography>
+              <Divider sx={{ mb: 2 }} />
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
               <TextField fullWidth label="Asal Sekolah (SMA/SMK/MA)" required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Jurusan di SMA/SMK" />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Tahun Lulus" type="number" required />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Nilai UTBK" />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Nilai Rapor" />
-            </Grid>
-            <Grid item xs={12}>
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
               <TextField fullWidth label="Prestasi Akademik / Non-Akademik" multiline rows={2} />
-            </Grid>
-            <Grid item xs={12}>
-              <Button variant="outlined" component="label" fullWidth>
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Button variant="outlined" component="label" fullWidth sx={{ height: '56px' }}>
                 Upload Ijazah & SKHUN
                 <input type="file" hidden accept=".pdf" />
               </Button>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         )}
 
         {activeStep === 5 && (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 3 }}>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Typography variant="h6" gutterBottom color="primary">Informasi Akademik Tambahan</Typography>
+              <Divider sx={{ mb: 2 }} />
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
               <TextField fullWidth label="Dosen Pembimbing Akademik (DPA)" />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <FormControl fullWidth>
                 <InputLabel>Status Beasiswa</InputLabel>
-                <Select label="Status Beasiswa">
+                <Select label="Status Beasiswa" defaultValue="">
                   <MenuItem value="Tidak Ada">Tidak Ada</MenuItem>
                   <MenuItem value="KIP">KIP</MenuItem>
                   <MenuItem value="Yayasan">Yayasan</MenuItem>
@@ -268,43 +306,45 @@ export default function AddMahasiswaDialog({ open, onClose }: AddMahasiswaDialog
                   <MenuItem value="Internal">Internal Kampus</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Konsentrasi Peminatan" />
-            </Grid>
-            <Grid item xs={12}>
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="subtitle2" gutterBottom>Social Media</Typography>
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="LinkedIn" placeholder="linkedin.com/in/username" />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Instagram" placeholder="@username" />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="TikTok" placeholder="@username" />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="GitHub" placeholder="github.com/username" />
-            </Grid>
-            <Grid item xs={12}>
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
               <TextField fullWidth label="Riwayat Penyakit" multiline rows={2} />
-            </Grid>
-            <Grid item xs={6}>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField fullWidth label="Disabilitas (jika ada)" />
-            </Grid>
-            <Grid item xs={6}>
-              <Button variant="outlined" component="label" fullWidth>
+            </Box>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
+              <Button variant="outlined" component="label" fullWidth sx={{ height: '56px' }}>
                 Upload Foto Mahasiswa
                 <input type="file" hidden accept="image/*" />
               </Button>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         )}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Batal</Button>
-        {activeStep > 0 && <Button onClick={handleBack}>Kembali</Button>}
+      <DialogActions sx={{ p: 3 }}>
+        <Button onClick={onClose} color="inherit">Batal</Button>
+        <Box sx={{ flex: '1 1 auto' }} />
+        <Button onClick={handleSaveDraft} color="primary" sx={{ mr: 1 }}>Simpan Sebagai Draft</Button>
+        {activeStep > 0 && <Button onClick={handleBack} sx={{ mr: 1 }}>Kembali</Button>}
         {activeStep < steps.length - 1 ? (
           <Button variant="contained" onClick={handleNext}>Selanjutnya</Button>
         ) : (

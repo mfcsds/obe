@@ -5,7 +5,6 @@ import {
   Paper,
   Typography,
   Box,
-  Grid,
   Card,
   CardContent,
   Tabs,
@@ -71,46 +70,49 @@ export default function ProfilDosenPage() {
   const [tabValue, setTabValue] = useState(0);
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
+    <Box sx={{ width: '100%', p: 3 }}>
+      <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
         <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', mb: 3 }}>
-          <Avatar sx={{ width: 100, height: 100, bgcolor: 'primary.main', fontSize: 40 }}>
+          <Avatar sx={{ width: 100, height: 100, bgcolor: 'primary.main', fontSize: 40, fontWeight: 'bold' }}>
             {dosenProfile.nama.charAt(0)}
           </Avatar>
           <Box>
-            <Typography variant="h4" fontWeight="bold">{dosenProfile.nama}</Typography>
-            <Typography variant="body1" color="text.secondary">NIDN: {dosenProfile.nidn}</Typography>
+            <Typography variant="h4" fontWeight="bold" color="primary.main">{dosenProfile.nama}</Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>NIDN: {dosenProfile.nidn}</Typography>
             <Typography variant="body1" color="text.secondary">{dosenProfile.email}</Typography>
-            <Box sx={{ mt: 1, display: 'flex', gap: 1 }}>
+            <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
               <Chip label={dosenProfile.jabatan} color="primary" />
-              <Chip label={dosenProfile.prodi} variant="outlined" />
+              <Chip label={dosenProfile.prodi} variant="outlined" color="primary" />
             </Box>
           </Box>
         </Box>
 
         <Divider sx={{ my: 3 }} />
 
-        <Grid container spacing={3}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr 1fr' }, gap: 3 }}>
           {statistik.map((stat) => (
-            <Grid item xs={12} sm={6} md={3} key={stat.label}>
-              <Card elevation={2} sx={{ bgcolor: stat.color, color: 'white' }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box>
-                      <Typography variant="h3" fontWeight="bold">{stat.value}</Typography>
-                      <Typography variant="body2">{stat.label}</Typography>
-                    </Box>
-                    <stat.icon sx={{ fontSize: 50, opacity: 0.7 }} />
+            <Card key={stat.label} elevation={0} sx={{ bgcolor: stat.color, color: 'white', borderRadius: 2 }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box>
+                    <Typography variant="h3" fontWeight="bold">{stat.value}</Typography>
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>{stat.label}</Typography>
                   </Box>
-                </CardContent>
-              </Card>
-            </Grid>
+                  <stat.icon sx={{ fontSize: 50, opacity: 0.8 }} />
+                </Box>
+              </CardContent>
+            </Card>
           ))}
-        </Grid>
+        </Box>
       </Paper>
 
-      <Paper elevation={3} sx={{ p: 3 }}>
-        <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} variant="scrollable">
+      <Paper elevation={2} sx={{ p: 0, overflow: 'hidden', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+        <Tabs
+          value={tabValue}
+          onChange={(_, v) => setTabValue(v)}
+          variant="scrollable"
+          sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}
+        >
           <Tab label="Publikasi" />
           <Tab label="Hibah Penelitian" />
           <Tab label="Hibah PKM" />
@@ -119,27 +121,27 @@ export default function ProfilDosenPage() {
           <Tab label="Riwayat Mengajar" />
         </Tabs>
 
-        <Box sx={{ mt: 3 }}>
+        <Box sx={{ p: 0 }}>
           {tabValue === 0 && (
-            <TableContainer>
-              <Table>
+            <TableContainer sx={{ maxHeight: 500 }}>
+              <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell><strong>Judul</strong></TableCell>
-                    <TableCell><strong>Tahun</strong></TableCell>
-                    <TableCell><strong>Jenis</strong></TableCell>
-                    <TableCell><strong>Penerbit</strong></TableCell>
-                    <TableCell><strong>Status</strong></TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Judul</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tahun</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Jenis</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Penerbit</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {publikasiData.map((pub) => (
                     <TableRow key={pub.id} hover>
-                      <TableCell>{pub.judul}</TableCell>
+                      <TableCell sx={{ fontWeight: 500 }}>{pub.judul}</TableCell>
                       <TableCell>{pub.tahun}</TableCell>
                       <TableCell>{pub.jenis}</TableCell>
                       <TableCell>{pub.penerbit}</TableCell>
-                      <TableCell><Chip label={pub.status} color="success" size="small" /></TableCell>
+                      <TableCell><Chip label={pub.status} color="success" size="small" variant="outlined" /></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -148,25 +150,25 @@ export default function ProfilDosenPage() {
           )}
 
           {tabValue === 1 && (
-            <TableContainer>
-              <Table>
+            <TableContainer sx={{ maxHeight: 500 }}>
+              <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell><strong>Judul Penelitian</strong></TableCell>
-                    <TableCell><strong>Tahun</strong></TableCell>
-                    <TableCell><strong>Skema</strong></TableCell>
-                    <TableCell><strong>Dana</strong></TableCell>
-                    <TableCell><strong>Status</strong></TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Judul Penelitian</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tahun</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Skema</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Dana</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {penelitianData.map((pen) => (
                     <TableRow key={pen.id} hover>
-                      <TableCell>{pen.judul}</TableCell>
+                      <TableCell sx={{ fontWeight: 500 }}>{pen.judul}</TableCell>
                       <TableCell>{pen.tahun}</TableCell>
                       <TableCell>{pen.skema}</TableCell>
                       <TableCell>{pen.dana}</TableCell>
-                      <TableCell><Chip label={pen.status} color={pen.status === 'Aktif' ? 'primary' : 'default'} size="small" /></TableCell>
+                      <TableCell><Chip label={pen.status} color={pen.status === 'Aktif' ? 'primary' : 'default'} size="small" variant="outlined" /></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -175,25 +177,25 @@ export default function ProfilDosenPage() {
           )}
 
           {tabValue === 2 && (
-            <TableContainer>
-              <Table>
+            <TableContainer sx={{ maxHeight: 500 }}>
+              <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell><strong>Judul PKM</strong></TableCell>
-                    <TableCell><strong>Tahun</strong></TableCell>
-                    <TableCell><strong>Mitra</strong></TableCell>
-                    <TableCell><strong>Dana</strong></TableCell>
-                    <TableCell><strong>Status</strong></TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Judul PKM</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tahun</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Mitra</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Dana</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {pkm.map((p) => (
                     <TableRow key={p.id} hover>
-                      <TableCell>{p.judul}</TableCell>
+                      <TableCell sx={{ fontWeight: 500 }}>{p.judul}</TableCell>
                       <TableCell>{p.tahun}</TableCell>
                       <TableCell>{p.mitra}</TableCell>
                       <TableCell>{p.dana}</TableCell>
-                      <TableCell><Chip label={p.status} color="success" size="small" /></TableCell>
+                      <TableCell><Chip label={p.status} color="success" size="small" variant="outlined" /></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -202,23 +204,23 @@ export default function ProfilDosenPage() {
           )}
 
           {tabValue === 3 && (
-            <TableContainer>
-              <Table>
+            <TableContainer sx={{ maxHeight: 500 }}>
+              <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell><strong>Nama Penghargaan</strong></TableCell>
-                    <TableCell><strong>Penyelenggara</strong></TableCell>
-                    <TableCell><strong>Tahun</strong></TableCell>
-                    <TableCell><strong>Tingkat</strong></TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Nama Penghargaan</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Penyelenggara</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tahun</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tingkat</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {rekognisi.map((r) => (
                     <TableRow key={r.id} hover>
-                      <TableCell>{r.nama}</TableCell>
+                      <TableCell sx={{ fontWeight: 500 }}>{r.nama}</TableCell>
                       <TableCell>{r.penyelenggara}</TableCell>
                       <TableCell>{r.tahun}</TableCell>
-                      <TableCell><Chip label={r.tingkat} color="secondary" size="small" /></TableCell>
+                      <TableCell><Chip label={r.tingkat} color="secondary" size="small" variant="outlined" /></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -227,25 +229,25 @@ export default function ProfilDosenPage() {
           )}
 
           {tabValue === 4 && (
-            <TableContainer>
-              <Table>
+            <TableContainer sx={{ maxHeight: 500 }}>
+              <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell><strong>Judul</strong></TableCell>
-                    <TableCell><strong>Peran</strong></TableCell>
-                    <TableCell><strong>Penyelenggara</strong></TableCell>
-                    <TableCell><strong>Tanggal</strong></TableCell>
-                    <TableCell><strong>Jenis</strong></TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Judul</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Peran</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Penyelenggara</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tanggal</TableCell>
+                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Jenis</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {seminarWebinar.map((sw) => (
                     <TableRow key={sw.id} hover>
-                      <TableCell>{sw.judul}</TableCell>
+                      <TableCell sx={{ fontWeight: 500 }}>{sw.judul}</TableCell>
                       <TableCell>{sw.peran}</TableCell>
                       <TableCell>{sw.penyelenggara}</TableCell>
                       <TableCell>{sw.tanggal}</TableCell>
-                      <TableCell><Chip label={sw.jenis} color="info" size="small" /></TableCell>
+                      <TableCell><Chip label={sw.jenis} color="info" size="small" variant="outlined" /></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -254,10 +256,12 @@ export default function ProfilDosenPage() {
           )}
 
           {tabValue === 5 && (
-            <Typography variant="body1" color="text.secondary">Data riwayat mengajar akan ditampilkan di sini</Typography>
+            <Box sx={{ p: 3 }}>
+              <Typography variant="body1" color="text.secondary">Data riwayat mengajar akan ditampilkan di sini</Typography>
+            </Box>
           )}
         </Box>
       </Paper>
-    </Container>
+    </Box>
   );
 }

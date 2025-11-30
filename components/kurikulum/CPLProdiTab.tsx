@@ -19,6 +19,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Paper,
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { useState } from 'react';
@@ -56,11 +57,11 @@ export default function CPLProdiTab() {
   };
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
         <Box>
-          <Box sx={{ typography: 'h6' }}>Capaian Pembelajaran Lulusan (CPL Prodi)</Box>
-          <Box sx={{ typography: 'body2', color: 'text.secondary' }}>
+          <Box sx={{ typography: 'h5', fontWeight: 'bold', color: 'primary.main' }}>Capaian Pembelajaran Lulusan (CPL Prodi)</Box>
+          <Box sx={{ typography: 'body1', color: 'text.secondary', mt: 1 }}>
             Daftar CPL yang harus dicapai oleh lulusan program studi.
           </Box>
         </Box>
@@ -69,56 +70,58 @@ export default function CPLProdiTab() {
         </Button>
       </Box>
 
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell width="5%"><strong>No</strong></TableCell>
-              <TableCell width="10%"><strong>Kode CPL</strong></TableCell>
-              <TableCell width="65%"><strong>Deskripsi CPL</strong></TableCell>
-              <TableCell width="10%"><strong>Kategori</strong></TableCell>
-              <TableCell width="10%" align="center"><strong>Aksi</strong></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {cplData.map((item, index) => (
-              <TableRow key={item.id} hover>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{item.kode}</TableCell>
-                <TableCell>{item.deskripsi}</TableCell>
-                <TableCell>{item.kategori}</TableCell>
-                <TableCell align="center">
-                  <IconButton size="small" color="primary" onClick={() => handleEdit(item)}>
-                    <Edit fontSize="small" />
-                  </IconButton>
-                  <IconButton size="small" color="error">
-                    <Delete fontSize="small" />
-                  </IconButton>
-                </TableCell>
+      <Paper elevation={2} sx={{ width: '100%', overflow: 'hidden', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+        <TableContainer sx={{ maxHeight: '70vh' }}>
+          <Table stickyHeader size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell width="5%" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>No</TableCell>
+                <TableCell width="10%" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Kode CPL</TableCell>
+                <TableCell width="65%" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Deskripsi CPL</TableCell>
+                <TableCell width="10%" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Kategori</TableCell>
+                <TableCell width="10%" align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Aksi</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {cplData.map((item, index) => (
+                <TableRow key={item.id} hover>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{item.kode}</TableCell>
+                  <TableCell>{item.deskripsi}</TableCell>
+                  <TableCell>{item.kategori}</TableCell>
+                  <TableCell align="center">
+                    <IconButton size="small" color="primary" onClick={() => handleEdit(item)}>
+                      <Edit fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" color="error">
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
 
       <Dialog open={openDialog} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>{selectedData ? 'Edit CPL Prodi' : 'Tambah CPL Prodi'}</DialogTitle>
         <DialogContent dividers>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, py: 1 }}>
-            <TextField 
-              fullWidth 
-              label="Kode CPL" 
-              defaultValue={selectedData?.kode} 
+            <TextField
+              fullWidth
+              label="Kode CPL"
+              defaultValue={selectedData?.kode}
               placeholder="CPL01"
-              required 
+              required
             />
-            <TextField 
-              fullWidth 
-              label="Deskripsi CPL" 
-              multiline 
+            <TextField
+              fullWidth
+              label="Deskripsi CPL"
+              multiline
               rows={6}
               defaultValue={selectedData?.deskripsi}
-              required 
+              required
             />
             <FormControl fullWidth required>
               <InputLabel>Kategori</InputLabel>

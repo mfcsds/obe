@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Container,
   Paper,
   Typography,
   Box,
@@ -46,7 +45,7 @@ export default function EditKurikulumPage() {
   const [tabValue, setTabValue] = useState(0);
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+    <Box sx={{ width: '100%', p: 3, overflow: 'hidden' }}>
       <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -64,20 +63,20 @@ export default function EditKurikulumPage() {
         </Box>
       </Paper>
 
-      <Paper elevation={3} sx={{ display: 'flex' }}>
-        <Tabs 
-          value={tabValue} 
-          onChange={(_, v) => setTabValue(v)} 
+      <Paper elevation={3} sx={{ display: 'flex', width: '100%', overflow: 'hidden' }}>
+        <Tabs
+          value={tabValue}
+          onChange={(_, v) => setTabValue(v)}
           orientation="vertical"
           variant="scrollable"
-          sx={{ borderRight: 1, borderColor: 'divider', minWidth: 250 }}
+          sx={{ borderRight: 1, borderColor: 'divider', minWidth: 250, flexShrink: 0 }}
         >
           {menuItems.map((item, index) => (
             <Tab key={index} label={item} sx={{ alignItems: 'flex-start', textAlign: 'left' }} />
           ))}
         </Tabs>
 
-        <Box sx={{ flexGrow: 1, p: 3 }}>
+        <Box sx={{ flexGrow: 1, p: 3, maxWidth: '100%', overflow: 'hidden' }}>
           {tabValue === 0 && <ProfilLulusanTab />}
 
           {tabValue === 1 && <CPLProdiTab />}
@@ -215,6 +214,6 @@ export default function EditKurikulumPage() {
           )}
         </Box>
       </Paper>
-    </Container>
+    </Box>
   );
 }

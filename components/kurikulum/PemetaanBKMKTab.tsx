@@ -9,6 +9,7 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  Paper,
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -37,58 +38,60 @@ export default function PemetaanBKMKTab() {
 
   const handleToggle = (mkIndex: number, bk: string) => {
     const newData = [...mappingData];
-    newData[mkIndex].mapping[bk] = !newData[mkIndex].mapping[bk];
+    (newData[mkIndex].mapping as any)[bk] = !(newData[mkIndex].mapping as any)[bk];
     setMappingData(newData);
   };
 
   return (
-    <Box>
-      <Box sx={{ mb: 2 }}>
-        <Box sx={{ typography: 'h6' }}>Bahan Kajian vs Mata Kuliah</Box>
-        <Box sx={{ typography: 'body2', color: 'text.secondary' }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ typography: 'h5', fontWeight: 'bold', color: 'primary.main' }}>Bahan Kajian vs Mata Kuliah</Box>
+        <Box sx={{ typography: 'body1', color: 'text.secondary', mt: 1 }}>
           Pemetaan bahan kajian ke dalam mata kuliah.
         </Box>
       </Box>
 
-      <TableContainer sx={{ maxHeight: '70vh', maxWidth: '100%', overflow: 'auto' }}>
-        <Table stickyHeader size="small" sx={{ minWidth: 'max-content' }}>
-          <TableHead>
-            <TableRow>
-              <TableCell rowSpan={2} sx={{ width: 40, position: 'sticky', left: 0, bgcolor: 'background.paper', zIndex: 3 }}><strong>No</strong></TableCell>
-              <TableCell rowSpan={2} sx={{ width: 70, position: 'sticky', left: 40, bgcolor: 'background.paper', zIndex: 3 }}><strong>Kode</strong></TableCell>
-              <TableCell rowSpan={2} sx={{ minWidth: 200, maxWidth: 250, position: 'sticky', left: 110, bgcolor: 'background.paper', zIndex: 3 }}><strong>Nama MK</strong></TableCell>
-              <TableCell rowSpan={2} sx={{ width: 50, position: 'sticky', left: 310, bgcolor: 'background.paper', zIndex: 3 }}><strong>SKS</strong></TableCell>
-              <TableCell rowSpan={2} sx={{ width: 40, position: 'sticky', left: 360, bgcolor: 'background.paper', zIndex: 3 }}><strong>W/P</strong></TableCell>
-              <TableCell colSpan={bkList.length} align="center"><strong>Bahan Kajian (BK)</strong></TableCell>
-            </TableRow>
-            <TableRow>
-              {bkList.map((bk) => (
-                <TableCell key={bk} align="center" sx={{ width: 50, fontSize: '0.75rem' }}><strong>{bk}</strong></TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {mappingData.map((item, index) => (
-              <TableRow key={item.kode} hover>
-                <TableCell sx={{ position: 'sticky', left: 0, bgcolor: 'background.paper', zIndex: 1, fontSize: '0.875rem' }}>{item.no}</TableCell>
-                <TableCell sx={{ position: 'sticky', left: 40, bgcolor: 'background.paper', zIndex: 1, fontSize: '0.875rem' }}>{item.kode}</TableCell>
-                <TableCell sx={{ position: 'sticky', left: 110, bgcolor: 'background.paper', zIndex: 1, fontSize: '0.875rem' }}>{item.nama}</TableCell>
-                <TableCell sx={{ position: 'sticky', left: 310, bgcolor: 'background.paper', zIndex: 1, fontSize: '0.875rem' }} align="center">{item.sks}</TableCell>
-                <TableCell sx={{ position: 'sticky', left: 360, bgcolor: 'background.paper', zIndex: 1, fontSize: '0.875rem' }} align="center">{item.jenis}</TableCell>
+      <Paper elevation={2} sx={{ width: '100%', overflow: 'hidden', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+        <TableContainer sx={{ maxHeight: '70vh' }}>
+          <Table stickyHeader size="small" sx={{ minWidth: 'max-content' }}>
+            <TableHead>
+              <TableRow>
+                <TableCell rowSpan={2} sx={{ width: 40, position: 'sticky', left: 0, bgcolor: 'primary.main', color: 'primary.contrastText', zIndex: 3, fontWeight: 'bold' }}>No</TableCell>
+                <TableCell rowSpan={2} sx={{ width: 70, position: 'sticky', left: 40, bgcolor: 'primary.main', color: 'primary.contrastText', zIndex: 3, fontWeight: 'bold' }}>Kode</TableCell>
+                <TableCell rowSpan={2} sx={{ minWidth: 200, maxWidth: 250, position: 'sticky', left: 110, bgcolor: 'primary.main', color: 'primary.contrastText', zIndex: 3, fontWeight: 'bold' }}>Nama MK</TableCell>
+                <TableCell rowSpan={2} sx={{ width: 50, position: 'sticky', left: 310, bgcolor: 'primary.main', color: 'primary.contrastText', zIndex: 3, fontWeight: 'bold' }}>SKS</TableCell>
+                <TableCell rowSpan={2} sx={{ width: 40, position: 'sticky', left: 360, bgcolor: 'primary.main', color: 'primary.contrastText', zIndex: 3, fontWeight: 'bold' }}>W/P</TableCell>
+                <TableCell colSpan={bkList.length} align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Bahan Kajian (BK)</TableCell>
+              </TableRow>
+              <TableRow>
                 {bkList.map((bk) => (
-                  <TableCell key={bk} align="center">
-                    <Checkbox 
-                      size="small"
-                      checked={item.mapping[bk]} 
-                      onChange={() => handleToggle(index, bk)}
-                    />
-                  </TableCell>
+                  <TableCell key={bk} align="center" sx={{ width: 50, fontSize: '0.75rem', bgcolor: 'primary.light', color: 'primary.contrastText', fontWeight: 'bold' }}>{bk}</TableCell>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {mappingData.map((item, index) => (
+                <TableRow key={item.kode} hover>
+                  <TableCell sx={{ position: 'sticky', left: 0, bgcolor: 'background.paper', zIndex: 1, fontSize: '0.875rem' }}>{item.no}</TableCell>
+                  <TableCell sx={{ position: 'sticky', left: 40, bgcolor: 'background.paper', zIndex: 1, fontSize: '0.875rem' }}>{item.kode}</TableCell>
+                  <TableCell sx={{ position: 'sticky', left: 110, bgcolor: 'background.paper', zIndex: 1, fontSize: '0.875rem' }}>{item.nama}</TableCell>
+                  <TableCell sx={{ position: 'sticky', left: 310, bgcolor: 'background.paper', zIndex: 1, fontSize: '0.875rem' }} align="center">{item.sks}</TableCell>
+                  <TableCell sx={{ position: 'sticky', left: 360, bgcolor: 'background.paper', zIndex: 1, fontSize: '0.875rem' }} align="center">{item.jenis}</TableCell>
+                  {bkList.map((bk) => (
+                    <TableCell key={bk} align="center">
+                      <Checkbox
+                        size="small"
+                        checked={(item.mapping as any)[bk]}
+                        onChange={() => handleToggle(index, bk)}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
     </Box>
   );
 }

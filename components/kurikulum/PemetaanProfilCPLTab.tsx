@@ -9,6 +9,7 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  Paper,
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -35,53 +36,55 @@ export default function PemetaanProfilCPLTab() {
 
   const handleToggle = (cplIndex: number, pl: string) => {
     const newData = [...mappingData];
-    newData[cplIndex].mapping[pl] = !newData[cplIndex].mapping[pl];
+    (newData[cplIndex].mapping as any)[pl] = !(newData[cplIndex].mapping as any)[pl];
     setMappingData(newData);
   };
 
   return (
-    <Box>
-      <Box sx={{ mb: 2 }}>
-        <Box sx={{ typography: 'h6' }}>Pemetaan Profil Lulusan dan CPL</Box>
-        <Box sx={{ typography: 'body2', color: 'text.secondary' }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ typography: 'h5', fontWeight: 'bold', color: 'primary.main' }}>Pemetaan Profil Lulusan dan CPL</Box>
+        <Box sx={{ typography: 'body1', color: 'text.secondary', mt: 1 }}>
           Matriks pemetaan antara profil lulusan dengan CPL.
         </Box>
       </Box>
 
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell width="5%" align="center"><strong>No</strong></TableCell>
-              <TableCell width="10%" align="center"><strong>Kode CPL</strong></TableCell>
-              <TableCell colSpan={profilLulusanList.length} align="center"><strong>Profil Lulusan (PL)</strong></TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              {profilLulusanList.map((pl) => (
-                <TableCell key={pl} align="center" width={`${80 / profilLulusanList.length}%`}><strong>{pl}</strong></TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {mappingData.map((item, index) => (
-              <TableRow key={item.kode} hover>
-                <TableCell align="center">{index + 1}</TableCell>
-                <TableCell align="center">{item.kode}</TableCell>
+      <Paper elevation={2} sx={{ width: '100%', overflow: 'hidden', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+        <TableContainer sx={{ maxHeight: '70vh' }}>
+          <Table stickyHeader size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell width="5%" align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>No</TableCell>
+                <TableCell width="10%" align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Kode CPL</TableCell>
+                <TableCell colSpan={profilLulusanList.length} align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Profil Lulusan (PL)</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell sx={{ bgcolor: 'primary.light' }}></TableCell>
+                <TableCell sx={{ bgcolor: 'primary.light' }}></TableCell>
                 {profilLulusanList.map((pl) => (
-                  <TableCell key={pl} align="center">
-                    <Checkbox 
-                      checked={item.mapping[pl]} 
-                      onChange={() => handleToggle(index, pl)}
-                    />
-                  </TableCell>
+                  <TableCell key={pl} align="center" width={`${80 / profilLulusanList.length}%`} sx={{ bgcolor: 'primary.light', color: 'primary.contrastText', fontWeight: 'bold' }}>{pl}</TableCell>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {mappingData.map((item, index) => (
+                <TableRow key={item.kode} hover>
+                  <TableCell align="center">{index + 1}</TableCell>
+                  <TableCell align="center">{item.kode}</TableCell>
+                  {profilLulusanList.map((pl) => (
+                    <TableCell key={pl} align="center">
+                      <Checkbox
+                        checked={(item.mapping as any)[pl]}
+                        onChange={() => handleToggle(index, pl)}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
     </Box>
   );
 }

@@ -9,6 +9,7 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  Paper,
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -49,52 +50,169 @@ export default function PemetaanCPLBKTab() {
 
   const handleToggle = (bkIndex: number, cpl: string) => {
     const newData = [...mappingData];
-    newData[bkIndex].mapping[cpl] = !newData[bkIndex].mapping[cpl];
+    (newData[bkIndex].mapping as any)[cpl] = !(newData[bkIndex].mapping as any)[cpl];
     setMappingData(newData);
   };
 
   return (
-    <Box>
-      <Box sx={{ mb: 2 }}>
-        <Box sx={{ typography: 'h6' }}>Pemetaan CPL vs Bahan Kajian</Box>
-        <Box sx={{ typography: 'body2', color: 'text.secondary' }}>
-          Matriks pemetaan antara CPL dengan Bahan Kajian.
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ typography: 'h5', fontWeight: 'bold', color: 'primary.main' }}>Pemetaan CPL vs Bahan Kajian</Box>
+        <Box sx={{ typography: 'body1', color: 'text.secondary', mt: 1 }}>
+          Matriks ini memetakan hubungan antara Capaian Pembelajaran Lulusan (CPL) dengan Bahan Kajian (BK).
+          Klik pada sel untuk menandai keterkaitan.
         </Box>
       </Box>
 
-      <TableContainer sx={{ maxHeight: 600 }}>
-        <Table stickyHeader size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell rowSpan={2} sx={{ minWidth: 250, position: 'sticky', left: 0, bgcolor: 'background.paper', zIndex: 3 }}><strong>Bahan Kajian</strong></TableCell>
-              <TableCell rowSpan={2} sx={{ minWidth: 80, position: 'sticky', left: 250, bgcolor: 'background.paper', zIndex: 3 }}><strong>BK</strong></TableCell>
-              <TableCell colSpan={cplList.length} align="center"><strong>Capaian Pembelajaran Lulusan (CPL)</strong></TableCell>
-            </TableRow>
-            <TableRow>
-              {cplList.map((cpl) => (
-                <TableCell key={cpl} align="center" sx={{ minWidth: 70 }}><strong>{cpl}</strong></TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {mappingData.map((item, index) => (
-              <TableRow key={item.kode} hover>
-                <TableCell sx={{ position: 'sticky', left: 0, bgcolor: 'background.paper', zIndex: 1 }}>{item.nama}</TableCell>
-                <TableCell sx={{ position: 'sticky', left: 250, bgcolor: 'background.paper', zIndex: 1 }}>{item.kode}</TableCell>
+      <Paper elevation={2} sx={{ width: '100%', overflow: 'hidden', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+        <TableContainer sx={{ maxHeight: '70vh' }}>
+          <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { borderRight: '1px solid', borderColor: 'divider' } }}>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  rowSpan={2}
+                  sx={{
+                    minWidth: 300,
+                    position: 'sticky',
+                    left: 0,
+                    bgcolor: 'primary.main',
+                    color: 'primary.contrastText',
+                    zIndex: 4,
+                    fontWeight: 'bold',
+                    borderRight: '2px solid',
+                    borderColor: 'primary.dark'
+                  }}
+                >
+                  Bahan Kajian
+                </TableCell>
+                <TableCell
+                  rowSpan={2}
+                  align="center"
+                  sx={{
+                    minWidth: 100,
+                    position: 'sticky',
+                    left: 300,
+                    bgcolor: 'primary.main',
+                    color: 'primary.contrastText',
+                    zIndex: 4,
+                    fontWeight: 'bold',
+                    borderRight: '2px solid',
+                    borderColor: 'primary.dark',
+                    boxShadow: '4px 0 8px -2px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  Kode BK
+                </TableCell>
+                <TableCell
+                  colSpan={cplList.length}
+                  align="center"
+                  sx={{
+                    bgcolor: 'primary.light',
+                    color: 'primary.contrastText',
+                    fontWeight: 'bold',
+                    borderBottom: '1px solid',
+                    borderColor: 'primary.main'
+                  }}
+                >
+                  Capaian Pembelajaran Lulusan (CPL)
+                </TableCell>
+              </TableRow>
+              <TableRow>
                 {cplList.map((cpl) => (
-                  <TableCell key={cpl} align="center">
-                    <Checkbox 
-                      size="small"
-                      checked={item.mapping[cpl]} 
-                      onChange={() => handleToggle(index, cpl)}
-                    />
+                  <TableCell
+                    key={cpl}
+                    align="center"
+                    sx={{
+                      minWidth: 80,
+                      bgcolor: 'background.paper',
+                      fontWeight: 'bold',
+                      color: 'text.primary',
+                      borderBottom: '2px solid',
+                      borderColor: 'divider'
+                    }}
+                  >
+                    {cpl}
                   </TableCell>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {mappingData.map((item, index) => (
+                <TableRow
+                  key={item.kode}
+                  hover
+                  sx={{
+                    '&:nth-of-type(odd)': { bgcolor: 'action.hover' },
+                    '&:hover': { bgcolor: 'action.selected' }
+                  }}
+                >
+                  <TableCell
+                    sx={{
+                      position: 'sticky',
+                      left: 0,
+                      bgcolor: 'background.paper',
+                      zIndex: 2,
+                      fontWeight: 500,
+                      borderRight: '2px solid',
+                      borderColor: 'divider'
+                    }}
+                  >
+                    {item.nama}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      position: 'sticky',
+                      left: 300,
+                      bgcolor: 'background.paper',
+                      zIndex: 2,
+                      borderRight: '2px solid',
+                      borderColor: 'divider',
+                      boxShadow: '4px 0 8px -2px rgba(0,0,0,0.05)'
+                    }}
+                  >
+                    {item.kode}
+                  </TableCell>
+                  {cplList.map((cpl) => {
+                    const isChecked = item.mapping[cpl as keyof typeof item.mapping];
+                    return (
+                      <TableCell
+                        key={cpl}
+                        align="center"
+                        onClick={() => handleToggle(index, cpl)}
+                        sx={{
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          bgcolor: isChecked ? 'action.selected' : 'inherit',
+                          '&:hover': {
+                            bgcolor: isChecked ? 'action.hover' : 'action.hover',
+                            transform: 'scale(1.05)',
+                            zIndex: 1,
+                            position: 'relative',
+                            boxShadow: 1
+                          }
+                        }}
+                      >
+                        <Checkbox
+                          size="small"
+                          checked={isChecked}
+                          onChange={() => handleToggle(index, cpl)}
+                          sx={{
+                            p: 0,
+                            '&.Mui-checked': {
+                              color: 'primary.main',
+                            }
+                          }}
+                        />
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
     </Box>
   );
 }
