@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 };
 
 import { NextAuthProvider } from "@/components/providers/NextAuthProvider";
+import AmplifyProvider from "@/components/providers/AmplifyProvider";
 
 export default function RootLayout({
   children,
@@ -38,7 +39,9 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <NextAuthProvider>
-              {children}
+              <AmplifyProvider>
+                {children}
+              </AmplifyProvider>
             </NextAuthProvider>
             <Toaster />
           </ThemeProvider>
