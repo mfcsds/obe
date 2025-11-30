@@ -1,3 +1,5 @@
+"use client";
+
 import LoginForm from "@/components/form/login/LoginForm";
 import { Box, Typography } from '@mui/material';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';

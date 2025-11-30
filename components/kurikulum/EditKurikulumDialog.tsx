@@ -7,7 +7,7 @@ import {
   DialogActions,
   Button,
   TextField,
-  Grid,
+  Box,
 } from '@mui/material';
 
 interface EditKurikulumDialogProps {
@@ -24,17 +24,17 @@ export default function EditKurikulumDialog({ open, onClose }: EditKurikulumDial
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Buat Kurikulum Baru</DialogTitle>
       <DialogContent dividers>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 2 }}>
+          <Box>
             <TextField fullWidth label="Nama Kurikulum" required />
-          </Grid>
-          <Grid item xs={12}>
+          </Box>
+          <Box>
             <TextField fullWidth label="Tahun Akademik" placeholder="2024/2025" required />
-          </Grid>
-          <Grid item xs={12}>
+          </Box>
+          <Box>
             <TextField fullWidth label="Deskripsi" multiline rows={3} />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Batal</Button>

@@ -1,3 +1,5 @@
+"use client";
+
 import { Container, Typography, Box, Paper } from '@mui/material';
 
 const Dashboard = () => {
