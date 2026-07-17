@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Container,
   Paper,
   Typography,
   Box,
@@ -9,12 +8,6 @@ import {
   CardContent,
   Tabs,
   Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Chip,
   Avatar,
   Divider,
@@ -26,6 +19,7 @@ import {
   VolunteerActivism,
 } from '@mui/icons-material';
 import { useState } from 'react';
+import { DataTable, type DataTableColumn } from '@/components/common/DataTable';
 
 const dosenProfile = {
   nama: 'Dr. Ahmad Fauzi, M.Kom',
@@ -42,28 +36,133 @@ const statistik = [
   { label: 'Rekognisi', value: 5, icon: EmojiEvents, color: '#9c27b0' },
 ];
 
-const publikasiData = [
+interface Publikasi {
+  id: number;
+  judul: string;
+  tahun: number;
+  jenis: string;
+  penerbit: string;
+  status: string;
+}
+
+interface Penelitian {
+  id: number;
+  judul: string;
+  tahun: number;
+  skema: string;
+  dana: string;
+  status: string;
+}
+
+interface Pkm {
+  id: number;
+  judul: string;
+  tahun: number;
+  mitra: string;
+  dana: string;
+  status: string;
+}
+
+interface Rekognisi {
+  id: number;
+  nama: string;
+  penyelenggara: string;
+  tahun: number;
+  tingkat: string;
+}
+
+interface SeminarWebinar {
+  id: number;
+  judul: string;
+  peran: string;
+  penyelenggara: string;
+  tanggal: string;
+  jenis: string;
+}
+
+const publikasiData: Publikasi[] = [
   { id: 1, judul: 'Machine Learning for Healthcare', tahun: 2023, jenis: 'Jurnal Internasional', penerbit: 'IEEE', status: 'Published' },
   { id: 2, judul: 'Deep Learning Applications', tahun: 2023, jenis: 'Prosiding', penerbit: 'Springer', status: 'Published' },
 ];
 
-const penelitianData = [
+const penelitianData: Penelitian[] = [
   { id: 1, judul: 'AI-Based Medical Diagnosis System', tahun: 2023, skema: 'Penelitian Dasar', dana: 'Rp 50.000.000', status: 'Aktif' },
   { id: 2, judul: 'Smart City IoT Platform', tahun: 2022, skema: 'Penelitian Terapan', dana: 'Rp 75.000.000', status: 'Selesai' },
 ];
 
-const pkm = [
+const pkm: Pkm[] = [
   { id: 1, judul: 'Pelatihan Web Development untuk UMKM', tahun: 2023, mitra: 'Karang Taruna Jakarta', dana: 'Rp 15.000.000', status: 'Selesai' },
 ];
 
-const rekognisi = [
+const rekognisi: Rekognisi[] = [
   { id: 1, nama: 'Best Paper Award', penyelenggara: 'IEEE Conference 2023', tahun: 2023, tingkat: 'Internasional' },
   { id: 2, nama: 'Dosen Berprestasi', penyelenggara: 'Universitas YARSI', tahun: 2022, tingkat: 'Universitas' },
 ];
 
-const seminarWebinar = [
+const seminarWebinar: SeminarWebinar[] = [
   { id: 1, judul: 'AI in Education', peran: 'Narasumber', penyelenggara: 'Universitas YARSI', tanggal: '2023-11-15', jenis: 'Seminar' },
   { id: 2, judul: 'Cloud Computing Trends', peran: 'Moderator', penyelenggara: 'AWS Indonesia', tanggal: '2023-10-20', jenis: 'Webinar' },
+];
+
+const publikasiColumns: DataTableColumn<Publikasi>[] = [
+  { key: 'judul', label: 'Judul' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'jenis', label: 'Jenis' },
+  { key: 'penerbit', label: 'Penerbit' },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (row) => <Chip label={row.status} color="success" size="small" variant="outlined" />,
+  },
+];
+
+const penelitianColumns: DataTableColumn<Penelitian>[] = [
+  { key: 'judul', label: 'Judul Penelitian' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'skema', label: 'Skema' },
+  { key: 'dana', label: 'Dana' },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (row) => (
+      <Chip label={row.status} color={row.status === 'Aktif' ? 'primary' : 'default'} size="small" variant="outlined" />
+    ),
+  },
+];
+
+const pkmColumns: DataTableColumn<Pkm>[] = [
+  { key: 'judul', label: 'Judul PKM' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'mitra', label: 'Mitra' },
+  { key: 'dana', label: 'Dana' },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (row) => <Chip label={row.status} color="success" size="small" variant="outlined" />,
+  },
+];
+
+const rekognisiColumns: DataTableColumn<Rekognisi>[] = [
+  { key: 'nama', label: 'Nama Penghargaan' },
+  { key: 'penyelenggara', label: 'Penyelenggara' },
+  { key: 'tahun', label: 'Tahun' },
+  {
+    key: 'tingkat',
+    label: 'Tingkat',
+    render: (row) => <Chip label={row.tingkat} color="secondary" size="small" variant="outlined" />,
+  },
+];
+
+const seminarWebinarColumns: DataTableColumn<SeminarWebinar>[] = [
+  { key: 'judul', label: 'Judul' },
+  { key: 'peran', label: 'Peran' },
+  { key: 'penyelenggara', label: 'Penyelenggara' },
+  { key: 'tanggal', label: 'Tanggal' },
+  {
+    key: 'jenis',
+    label: 'Jenis',
+    render: (row) => <Chip label={row.jenis} color="info" size="small" variant="outlined" />,
+  },
 ];
 
 export default function ProfilDosenPage() {
@@ -123,136 +222,23 @@ export default function ProfilDosenPage() {
 
         <Box sx={{ p: 0 }}>
           {tabValue === 0 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Judul</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tahun</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Jenis</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Penerbit</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {publikasiData.map((pub) => (
-                    <TableRow key={pub.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{pub.judul}</TableCell>
-                      <TableCell>{pub.tahun}</TableCell>
-                      <TableCell>{pub.jenis}</TableCell>
-                      <TableCell>{pub.penerbit}</TableCell>
-                      <TableCell><Chip label={pub.status} color="success" size="small" variant="outlined" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={publikasiColumns} rows={publikasiData} getRowKey={(row) => row.id} maxHeight={500} />
           )}
 
           {tabValue === 1 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Judul Penelitian</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tahun</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Skema</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Dana</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {penelitianData.map((pen) => (
-                    <TableRow key={pen.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{pen.judul}</TableCell>
-                      <TableCell>{pen.tahun}</TableCell>
-                      <TableCell>{pen.skema}</TableCell>
-                      <TableCell>{pen.dana}</TableCell>
-                      <TableCell><Chip label={pen.status} color={pen.status === 'Aktif' ? 'primary' : 'default'} size="small" variant="outlined" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={penelitianColumns} rows={penelitianData} getRowKey={(row) => row.id} maxHeight={500} />
           )}
 
           {tabValue === 2 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Judul PKM</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tahun</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Mitra</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Dana</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {pkm.map((p) => (
-                    <TableRow key={p.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{p.judul}</TableCell>
-                      <TableCell>{p.tahun}</TableCell>
-                      <TableCell>{p.mitra}</TableCell>
-                      <TableCell>{p.dana}</TableCell>
-                      <TableCell><Chip label={p.status} color="success" size="small" variant="outlined" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={pkmColumns} rows={pkm} getRowKey={(row) => row.id} maxHeight={500} />
           )}
 
           {tabValue === 3 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Nama Penghargaan</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Penyelenggara</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tahun</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tingkat</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rekognisi.map((r) => (
-                    <TableRow key={r.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{r.nama}</TableCell>
-                      <TableCell>{r.penyelenggara}</TableCell>
-                      <TableCell>{r.tahun}</TableCell>
-                      <TableCell><Chip label={r.tingkat} color="secondary" size="small" variant="outlined" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={rekognisiColumns} rows={rekognisi} getRowKey={(row) => row.id} maxHeight={500} />
           )}
 
           {tabValue === 4 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Judul</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Peran</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Penyelenggara</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tanggal</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Jenis</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {seminarWebinar.map((sw) => (
-                    <TableRow key={sw.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{sw.judul}</TableCell>
-                      <TableCell>{sw.peran}</TableCell>
-                      <TableCell>{sw.penyelenggara}</TableCell>
-                      <TableCell>{sw.tanggal}</TableCell>
-                      <TableCell><Chip label={sw.jenis} color="info" size="small" variant="outlined" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={seminarWebinarColumns} rows={seminarWebinar} getRowKey={(row) => row.id} maxHeight={500} />
           )}
 
           {tabValue === 5 && (

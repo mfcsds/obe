@@ -1,17 +1,10 @@
 "use client";
 
 import {
-  Container,
-  Paper,
   Typography,
   Box,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Paper,
   TextField,
   IconButton,
   Chip,
@@ -24,8 +17,23 @@ import { Add, Edit, Delete, Search, Visibility, Download } from '@mui/icons-mate
 import { useState } from 'react';
 import Link from 'next/link';
 import AddMahasiswaDialog from '@/components/mahasiswa/AddMahasiswaDialog';
+import { DataTable, type DataTableColumn } from '@/components/common/DataTable';
+import { exportRowsToCsv } from '@/lib/csv-export';
 
-const mahasiswaData = [
+interface Mahasiswa {
+  id: number;
+  nim: string;
+  nama: string;
+  prodi: string;
+  angkatan: number;
+  semester: number;
+  statusAwal: string;
+  sksTempuh: number;
+  ipk: number;
+  status: string;
+}
+
+const mahasiswaData: Mahasiswa[] = [
   { id: 1, nim: '2021001', nama: 'Budi Santoso', prodi: 'Teknik Informatika', angkatan: 2021, semester: 6, statusAwal: 'Peserta Didik Baru', sksTempuh: 120, ipk: 3.75, status: 'Aktif' },
   { id: 2, nim: '2021002', nama: 'Siti Aminah', prodi: 'Teknik Informatika', angkatan: 2021, semester: 6, statusAwal: 'Peserta Didik Baru', sksTempuh: 122, ipk: 3.85, status: 'Aktif' },
   { id: 3, nim: '2022015', nama: 'Ahmad Rizki', prodi: 'Teknik Informatika', angkatan: 2022, semester: 4, statusAwal: 'Pindahan', sksTempuh: 80, ipk: 3.50, status: 'Aktif' },
@@ -38,45 +46,82 @@ export default function MahasiswaPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
 
-  const handleExport = () => {
-    const headers = ['NIM', 'Nama', 'Prodi', 'Angkatan', 'Semester', 'Status Awal', 'SKS Tempuh', 'IPK', 'Status'];
-    const csvContent = [
-      headers.join(','),
-      ...mahasiswaData.filter(m => {
-        const matchSearch = m.nama.toLowerCase().includes(searchTerm.toLowerCase()) || m.nim.includes(searchTerm);
-        const matchAngkatan = filterAngkatan ? m.angkatan.toString() === filterAngkatan : true;
-        const matchStatus = filterStatus ? m.status === filterStatus : true;
-        const matchStatusAwal = filterStatusAwal ? m.statusAwal === filterStatusAwal : true;
-        return matchSearch && matchAngkatan && matchStatus && matchStatusAwal;
-      }).map(m => [
-        m.nim,
-        `"${m.nama}"`,
-        `"${m.prodi}"`,
-        m.angkatan,
-        m.semester,
-        `"${m.statusAwal}"`,
-        m.sksTempuh,
-        m.ipk,
-        m.status
-      ].join(','))
-    ].join('\n');
+  const filteredMahasiswa = mahasiswaData.filter((mhs) => {
+    const matchSearch = mhs.nama.toLowerCase().includes(searchTerm.toLowerCase()) || mhs.nim.includes(searchTerm);
+    const matchAngkatan = filterAngkatan ? mhs.angkatan.toString() === filterAngkatan : true;
+    const matchStatus = filterStatus ? mhs.status === filterStatus : true;
+    const matchStatusAwal = filterStatusAwal ? mhs.statusAwal === filterStatusAwal : true;
+    return matchSearch && matchAngkatan && matchStatus && matchStatusAwal;
+  });
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', 'data_mahasiswa.csv');
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+  const handleExport = () => {
+    exportRowsToCsv(
+      filteredMahasiswa,
+      [
+        { header: 'NIM', getValue: (m) => m.nim },
+        { header: 'Nama', getValue: (m) => m.nama },
+        { header: 'Prodi', getValue: (m) => m.prodi },
+        { header: 'Angkatan', getValue: (m) => m.angkatan },
+        { header: 'Semester', getValue: (m) => m.semester },
+        { header: 'Status Awal', getValue: (m) => m.statusAwal },
+        { header: 'SKS Tempuh', getValue: (m) => m.sksTempuh },
+        { header: 'IPK', getValue: (m) => m.ipk },
+        { header: 'Status', getValue: (m) => m.status },
+      ],
+      'data_mahasiswa.csv'
+    );
   };
 
   const uniqueAngkatan = [...new Set(mahasiswaData.map(m => m.angkatan))].sort((a, b) => b - a);
   const uniqueStatus = [...new Set(mahasiswaData.map(m => m.status))];
   const uniqueStatusAwal = [...new Set(mahasiswaData.map(m => m.statusAwal))];
+
+  const columns: DataTableColumn<Mahasiswa>[] = [
+    { key: 'nim', label: 'NIM' },
+    { key: 'nama', label: 'Nama' },
+    { key: 'prodi', label: 'Prodi' },
+    { key: 'angkatan', label: 'Angkatan', align: 'center' },
+    { key: 'semester', label: 'Semester', align: 'center' },
+    { key: 'statusAwal', label: 'Status Awal' },
+    { key: 'sksTempuh', label: 'SKS Tempuh', align: 'center' },
+    {
+      key: 'ipk',
+      label: 'IPK',
+      align: 'center',
+      render: (mhs) => (
+        <Chip
+          label={mhs.ipk}
+          color={mhs.ipk >= 3.5 ? 'success' : mhs.ipk >= 3.0 ? 'primary' : 'warning'}
+          size="small"
+          variant="outlined"
+        />
+      ),
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      align: 'center',
+      render: (mhs) => <Chip label={mhs.status} color="success" size="small" />,
+    },
+    {
+      key: 'aksi',
+      label: 'Aksi',
+      align: 'center',
+      render: (mhs) => (
+        <>
+          <IconButton size="small" color="info" component={Link} href={`/mahasiswa/${mhs.id}`}>
+            <Visibility fontSize="small" />
+          </IconButton>
+          <IconButton size="small" color="primary">
+            <Edit fontSize="small" />
+          </IconButton>
+          <IconButton size="small" color="error">
+            <Delete fontSize="small" />
+          </IconButton>
+        </>
+      ),
+    },
+  ];
 
   return (
     <Box sx={{ width: '100%', p: 3 }}>
@@ -151,67 +196,13 @@ export default function MahasiswaPage() {
         </Box>
       </Paper>
 
-      <Paper elevation={2} sx={{ width: '100%', overflow: 'hidden', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
-        <TableContainer>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>NIM</TableCell>
-                <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Nama</TableCell>
-                <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Prodi</TableCell>
-                <TableCell align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Angkatan</TableCell>
-                <TableCell align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Semester</TableCell>
-                <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status Awal</TableCell>
-                <TableCell align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>SKS Tempuh</TableCell>
-                <TableCell align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>IPK</TableCell>
-                <TableCell align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status</TableCell>
-                <TableCell align="center" sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Aksi</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {mahasiswaData.filter(m => {
-                const matchSearch = m.nama.toLowerCase().includes(searchTerm.toLowerCase()) || m.nim.includes(searchTerm);
-                const matchAngkatan = filterAngkatan ? m.angkatan.toString() === filterAngkatan : true;
-                const matchStatus = filterStatus ? m.status === filterStatus : true;
-                const matchStatusAwal = filterStatusAwal ? m.statusAwal === filterStatusAwal : true;
-                return matchSearch && matchAngkatan && matchStatus && matchStatusAwal;
-              }).map((mhs) => (
-                <TableRow key={mhs.id} hover>
-                  <TableCell>{mhs.nim}</TableCell>
-                  <TableCell sx={{ fontWeight: 500 }}>{mhs.nama}</TableCell>
-                  <TableCell>{mhs.prodi}</TableCell>
-                  <TableCell align="center">{mhs.angkatan}</TableCell>
-                  <TableCell align="center">{mhs.semester}</TableCell>
-                  <TableCell>{mhs.statusAwal}</TableCell>
-                  <TableCell align="center">{mhs.sksTempuh}</TableCell>
-                  <TableCell align="center">
-                    <Chip
-                      label={mhs.ipk}
-                      color={mhs.ipk >= 3.5 ? 'success' : mhs.ipk >= 3.0 ? 'primary' : 'warning'}
-                      size="small"
-                      variant="outlined"
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    <Chip label={mhs.status} color="success" size="small" />
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton size="small" color="info" component={Link} href={`/mahasiswa/${mhs.id}`}>
-                      <Visibility fontSize="small" />
-                    </IconButton>
-                    <IconButton size="small" color="primary">
-                      <Edit fontSize="small" />
-                    </IconButton>
-                    <IconButton size="small" color="error">
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+      <DataTable
+        columns={columns}
+        rows={filteredMahasiswa}
+        getRowKey={(mhs) => mhs.id}
+        withPaper
+        emptyMessage="Tidak ada mahasiswa yang cocok dengan filter."
+      />
 
       <AddMahasiswaDialog open={openDialog} onClose={() => setOpenDialog(false)} />
     </Box>

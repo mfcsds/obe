@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Container,
   Paper,
   Typography,
   Box,
@@ -9,12 +8,6 @@ import {
   CardContent,
   Tabs,
   Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Chip,
   Avatar,
   Divider,
@@ -29,6 +22,7 @@ import {
   GitHub,
 } from '@mui/icons-material';
 import { useState } from 'react';
+import { DataTable, type DataTableColumn } from '@/components/common/DataTable';
 
 const mahasiswaProfile = {
   nim: '2021001',
@@ -52,7 +46,50 @@ const statistik = [
   { label: 'Status', value: 'Aktif', icon: Work, color: '#9c27b0' },
 ];
 
-const krsData = [
+interface Krs {
+  id: number;
+  semester: number;
+  kode: string;
+  matakuliah: string;
+  sks: number;
+  nilai: string;
+  mutu: number;
+}
+
+interface Kkn {
+  id: number;
+  lokasi: string;
+  periode: string;
+  status: string;
+  nilai: string;
+}
+
+interface Magang {
+  id: number;
+  perusahaan: string;
+  posisi: string;
+  periode: string;
+  status: string;
+  nilai: string;
+}
+
+interface Mbkm {
+  id: number;
+  program: string;
+  kegiatan: string;
+  periode: string;
+  status: string;
+}
+
+interface Prestasi {
+  id: number;
+  nama: string;
+  penyelenggara: string;
+  tahun: number;
+  tingkat: string;
+}
+
+const krsData: Krs[] = [
   { id: 1, semester: 6, kode: 'TIF601', matakuliah: 'Skripsi', sks: 6, nilai: 'A', mutu: 4.0 },
   { id: 2, semester: 6, kode: 'TIF602', matakuliah: 'Keamanan Sistem', sks: 3, nilai: 'A-', mutu: 3.7 },
   { id: 3, semester: 5, kode: 'TIF501', matakuliah: 'Machine Learning', sks: 3, nilai: 'A', mutu: 4.0 },
@@ -66,26 +103,103 @@ const skripsiData = {
   tanggalMulai: '2023-09-01',
 };
 
-const kknData = [
+const kknData: Kkn[] = [
   { id: 1, lokasi: 'Desa Sukamaju, Bogor', periode: 'Juli - Agustus 2023', status: 'Selesai', nilai: 'A' },
 ];
 
-const magangData = [
+const magangData: Magang[] = [
   { id: 1, perusahaan: 'PT. Tech Indonesia', posisi: 'Backend Developer', periode: 'Jan - Apr 2023', status: 'Selesai', nilai: 'A' },
 ];
 
-const mbkmData = [
+const mbkmData: Mbkm[] = [
   { id: 1, program: 'Studi Independen - Dicoding', kegiatan: 'Backend Developer Path', periode: 'Sep - Des 2022', status: 'Selesai' },
 ];
 
-const prestasiAkademik = [
+const prestasiAkademik: Prestasi[] = [
   { id: 1, nama: 'Juara 1 Lomba Karya Tulis Ilmiah', penyelenggara: 'Universitas YARSI', tahun: 2023, tingkat: 'Universitas' },
   { id: 2, nama: 'Best Student Award', penyelenggara: 'Fakultas Teknik', tahun: 2022, tingkat: 'Fakultas' },
 ];
 
-const prestasiNonAkademik = [
+const prestasiNonAkademik: Prestasi[] = [
   { id: 1, nama: 'Juara 2 Hackathon Nasional', penyelenggara: 'Kemenkominfo', tahun: 2023, tingkat: 'Nasional' },
   { id: 2, nama: 'Finalis Kompetisi Web Design', penyelenggara: 'HMTI', tahun: 2022, tingkat: 'Regional' },
+];
+
+const krsColumns: DataTableColumn<Krs>[] = [
+  { key: 'semester', label: 'Semester', align: 'center' },
+  { key: 'kode', label: 'Kode' },
+  { key: 'matakuliah', label: 'Mata Kuliah' },
+  { key: 'sks', label: 'SKS', align: 'center' },
+  {
+    key: 'nilai',
+    label: 'Nilai',
+    render: (row) => <Chip label={row.nilai} color="success" size="small" variant="outlined" />,
+  },
+  { key: 'mutu', label: 'Mutu', align: 'center' },
+];
+
+const kknColumns: DataTableColumn<Kkn>[] = [
+  { key: 'lokasi', label: 'Lokasi' },
+  { key: 'periode', label: 'Periode' },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (row) => <Chip label={row.status} color="success" size="small" variant="outlined" />,
+  },
+  {
+    key: 'nilai',
+    label: 'Nilai',
+    render: (row) => <Chip label={row.nilai} color="success" size="small" variant="outlined" />,
+  },
+];
+
+const magangColumns: DataTableColumn<Magang>[] = [
+  { key: 'perusahaan', label: 'Perusahaan' },
+  { key: 'posisi', label: 'Posisi' },
+  { key: 'periode', label: 'Periode' },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (row) => <Chip label={row.status} color="success" size="small" variant="outlined" />,
+  },
+  {
+    key: 'nilai',
+    label: 'Nilai',
+    render: (row) => <Chip label={row.nilai} color="success" size="small" variant="outlined" />,
+  },
+];
+
+const mbkmColumns: DataTableColumn<Mbkm>[] = [
+  { key: 'program', label: 'Program' },
+  { key: 'kegiatan', label: 'Kegiatan' },
+  { key: 'periode', label: 'Periode' },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (row) => <Chip label={row.status} color="success" size="small" variant="outlined" />,
+  },
+];
+
+const prestasiAkademikColumns: DataTableColumn<Prestasi>[] = [
+  { key: 'nama', label: 'Nama Prestasi' },
+  { key: 'penyelenggara', label: 'Penyelenggara' },
+  { key: 'tahun', label: 'Tahun' },
+  {
+    key: 'tingkat',
+    label: 'Tingkat',
+    render: (row) => <Chip label={row.tingkat} color="primary" size="small" variant="outlined" />,
+  },
+];
+
+const prestasiNonAkademikColumns: DataTableColumn<Prestasi>[] = [
+  { key: 'nama', label: 'Nama Prestasi' },
+  { key: 'penyelenggara', label: 'Penyelenggara' },
+  { key: 'tahun', label: 'Tahun' },
+  {
+    key: 'tingkat',
+    label: 'Tingkat',
+    render: (row) => <Chip label={row.tingkat} color="secondary" size="small" variant="outlined" />,
+  },
 ];
 
 export default function ProfilMahasiswaPage() {
@@ -162,32 +276,7 @@ export default function ProfilMahasiswaPage() {
 
         <Box sx={{ p: 0 }}>
           {tabValue === 0 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Semester</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Kode</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Mata Kuliah</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>SKS</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Nilai</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Mutu</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {krsData.map((krs) => (
-                    <TableRow key={krs.id} hover>
-                      <TableCell align="center">{krs.semester}</TableCell>
-                      <TableCell>{krs.kode}</TableCell>
-                      <TableCell sx={{ fontWeight: 500 }}>{krs.matakuliah}</TableCell>
-                      <TableCell align="center">{krs.sks}</TableCell>
-                      <TableCell><Chip label={krs.nilai} color="success" size="small" variant="outlined" /></TableCell>
-                      <TableCell align="center">{krs.mutu}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={krsColumns} rows={krsData} getRowKey={(row) => row.id} maxHeight={500} />
           )}
 
           {tabValue === 1 && (
@@ -233,130 +322,23 @@ export default function ProfilMahasiswaPage() {
           )}
 
           {tabValue === 2 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Lokasi</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Periode</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Nilai</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {kknData.map((kkn) => (
-                    <TableRow key={kkn.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{kkn.lokasi}</TableCell>
-                      <TableCell>{kkn.periode}</TableCell>
-                      <TableCell><Chip label={kkn.status} color="success" size="small" variant="outlined" /></TableCell>
-                      <TableCell><Chip label={kkn.nilai} color="success" size="small" variant="outlined" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={kknColumns} rows={kknData} getRowKey={(row) => row.id} maxHeight={500} />
           )}
 
           {tabValue === 3 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Perusahaan</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Posisi</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Periode</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Nilai</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {magangData.map((magang) => (
-                    <TableRow key={magang.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{magang.perusahaan}</TableCell>
-                      <TableCell>{magang.posisi}</TableCell>
-                      <TableCell>{magang.periode}</TableCell>
-                      <TableCell><Chip label={magang.status} color="success" size="small" variant="outlined" /></TableCell>
-                      <TableCell><Chip label={magang.nilai} color="success" size="small" variant="outlined" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={magangColumns} rows={magangData} getRowKey={(row) => row.id} maxHeight={500} />
           )}
 
           {tabValue === 4 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Program</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Kegiatan</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Periode</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {mbkmData.map((mbkm) => (
-                    <TableRow key={mbkm.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{mbkm.program}</TableCell>
-                      <TableCell>{mbkm.kegiatan}</TableCell>
-                      <TableCell>{mbkm.periode}</TableCell>
-                      <TableCell><Chip label={mbkm.status} color="success" size="small" variant="outlined" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={mbkmColumns} rows={mbkmData} getRowKey={(row) => row.id} maxHeight={500} />
           )}
 
           {tabValue === 5 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Nama Prestasi</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Penyelenggara</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tahun</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tingkat</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {prestasiAkademik.map((prestasi) => (
-                    <TableRow key={prestasi.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{prestasi.nama}</TableCell>
-                      <TableCell>{prestasi.penyelenggara}</TableCell>
-                      <TableCell>{prestasi.tahun}</TableCell>
-                      <TableCell><Chip label={prestasi.tingkat} color="primary" size="small" variant="outlined" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={prestasiAkademikColumns} rows={prestasiAkademik} getRowKey={(row) => row.id} maxHeight={500} />
           )}
 
           {tabValue === 6 && (
-            <TableContainer sx={{ maxHeight: 500 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Nama Prestasi</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Penyelenggara</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tahun</TableCell>
-                    <TableCell sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 'bold' }}>Tingkat</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {prestasiNonAkademik.map((prestasi) => (
-                    <TableRow key={prestasi.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{prestasi.nama}</TableCell>
-                      <TableCell>{prestasi.penyelenggara}</TableCell>
-                      <TableCell>{prestasi.tahun}</TableCell>
-                      <TableCell><Chip label={prestasi.tingkat} color="secondary" size="small" variant="outlined" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable columns={prestasiNonAkademikColumns} rows={prestasiNonAkademik} getRowKey={(row) => row.id} maxHeight={500} />
           )}
         </Box>
       </Paper>

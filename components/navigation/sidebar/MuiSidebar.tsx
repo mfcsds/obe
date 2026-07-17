@@ -39,20 +39,27 @@ import {
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { useState } from 'react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+import type { Role } from '@/types/role';
 
 const drawerWidth = 280;
 
 interface MuiSidebarProps {
   open: boolean;
   onClose: () => void;
+  /**
+   * Role user yang sedang login, diteruskan dari Server Component induk.
+   * `undefined` berarti user belum diberi label role yang valid di
+   * Appwrite Console - sidebar akan menampilkan menu kosong daripada
+   * menebak role default (mencegah akses berlebih yang tidak disengaja).
+   */
+  userRole: Role | undefined;
 }
 
 interface MenuItem {
   title: string;
   icon: React.ElementType;
   url: string;
-  roles?: string[];
+  roles?: Role[];
 }
 
 const menuItems: MenuItem[] = [
@@ -94,10 +101,7 @@ const menuKeuangan: MenuItem[] = [
   { title: "Tunggakan Mahasiswa", icon: Percent, url: "#", roles: ['kaprodi'] },
 ];
 
-export function MuiSidebar({ open, onClose }: MuiSidebarProps) {
-  const { data: session } = useSession();
-  const userRole = session?.user?.role;
-
+export function MuiSidebar({ open, onClose, userRole }: MuiSidebarProps) {
   const [openAkademik, setOpenAkademik] = useState(true);
   const [openSDM, setOpenSDM] = useState(true);
   const [openAdministrasi, setOpenAdministrasi] = useState(true);
@@ -114,8 +118,6 @@ export function MuiSidebar({ open, onClose }: MuiSidebarProps) {
   const filteredCivitasAkademik = filterItems(menuCivitasAkademik);
   const filteredAdministrasi = filterItems(menuAdministrasi);
   const filteredKeuangan = filterItems(menuKeuangan);
-
-  if (!session) return null;
 
   return (
     <Drawer

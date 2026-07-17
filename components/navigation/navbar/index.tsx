@@ -1,18 +1,22 @@
+"use client";
+
 import { AppBar, Toolbar, Box, Typography, Avatar, IconButton, Menu, MenuItem, ListItemIcon } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import Logout from '@mui/icons-material/Logout';
 import DynamicBreadcrumbs from '../Breadcrumbs';
 import { useState } from 'react';
-import { signOut, useSession } from 'next-auth/react';
+import { signOutAction } from '@/lib/appwrite/auth-actions';
 
 interface NavBarProps {
   onMenuClick: () => void;
   sidebarOpen: boolean;
+  /** Nama dan role user yang sedang login, diteruskan dari Server Component induk. */
+  userName: string;
+  userRole: string;
 }
 
-const NavBar = ({ onMenuClick, sidebarOpen }: NavBarProps) => {
-  const { data: session } = useSession();
+const NavBar = ({ onMenuClick, sidebarOpen, userName, userRole }: NavBarProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -26,7 +30,7 @@ const NavBar = ({ onMenuClick, sidebarOpen }: NavBarProps) => {
 
   const handleLogout = () => {
     handleClose();
-    signOut({ callbackUrl: '/sign-in' });
+    signOutAction();
   };
 
   return (
@@ -55,10 +59,10 @@ const NavBar = ({ onMenuClick, sidebarOpen }: NavBarProps) => {
           </IconButton>
           <Box onClick={handleClick} sx={{ cursor: 'pointer' }}>
             <Typography variant="body1" fontWeight="bold">
-              {session?.user?.name || 'User'}
+              {userName}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              {session?.user?.role || 'Role'}
+              {userRole}
             </Typography>
           </Box>
           <Menu

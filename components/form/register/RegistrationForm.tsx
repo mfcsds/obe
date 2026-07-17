@@ -1,21 +1,28 @@
 "use client";
+
 import React from "react";
-import { Card, CardContent, TextField, Button, Typography, Box, IconButton, InputAdornment } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { signUp, confirmSignUp } from 'aws-amplify/auth';
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  IconButton,
+  InputAdornment,
+  Link as MuiLink,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { toast } from "sonner";
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import ROUTES from "@/constant/routes";
+import { signUpWithEmail } from "@/lib/appwrite/auth-actions";
 
 const RegistrationForm = () => {
-  const [username, setUsername] = React.useState("");
+  const router = useRouter();
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [confirmationCode, setConfirmationCode] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [step, setStep] = React.useState<'REGISTER' | 'CONFIRM'>('REGISTER');
-
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -26,183 +33,108 @@ const RegistrationForm = () => {
   const handleRegister = async () => {
     setLoading(true);
     try {
-      const { isSignUpComplete, userId, nextStep } = await signUp({
-        username: username,
-        password,
-        options: {
-          userAttributes: {
-            email,
-            name,
-          },
-        },
-      });
+      // Registrasi mandiri selalu jadi role "mahasiswa" (default di server
+      // action). Akun kaprodi/dosen dinaikkan rolenya lewat Appwrite Console.
+      const result = await signUpWithEmail(name, email, password);
 
-      if (isSignUpComplete) {
-        toast.success("Registration successful! Please login.");
-        window.location.href = ROUTES.SIGN_IN;
-      } else {
-        if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
-          toast.success("Registration successful! Please check your email for confirmation code.");
-          setStep('CONFIRM');
-        } else {
-          toast.info("Registration incomplete. Check console.");
-        }
+      if (result.error) {
+        toast.error(result.error);
+        return;
       }
-    } catch (error) {
-      console.error("Registration error:", error);
-      toast.error(error instanceof Error ? error.message : "Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleConfirmSignUp = async () => {
-    setLoading(true);
-    try {
-      const { isSignUpComplete, nextStep } = await confirmSignUp({
-        username: username,
-        confirmationCode
-      });
-
-      if (isSignUpComplete) {
-        toast.success("Account confirmed successfully! Redirecting to login...");
-        window.location.href = ROUTES.SIGN_IN;
-      } else {
-        toast.info("Confirmation incomplete. Check console.");
-      }
-    } catch (error) {
-      console.error("Confirmation error:", error);
-      toast.error(error instanceof Error ? error.message : "Confirmation failed");
+      toast.success("Registrasi berhasil! Selamat datang.");
+      router.push(ROUTES.HOME);
+      router.refresh();
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Box sx={{ p: 5 }}>
-      <Card elevation={8} sx={{ p: 3, m: 2 }}>
-        <Box sx={{ mt: 5, mb: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
-            <Box>
-              <Typography variant="h4" fontWeight="bold" color="primary" gutterBottom>
-                {step === 'REGISTER' ? 'Create Your Account' : 'Confirm Your Account'}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {step === 'REGISTER'
-                  ? 'This Application will help you to design sophisticated Outcome Based Education Curriculum for colloge'
-                  : 'Please enter the confirmation code sent to your email address.'}
-              </Typography>
-            </Box>
-            <FiberManualRecordIcon sx={{ fontSize: 120, color: 'grey.300' }} />
-          </Box>
-        </Box>
-        <CardContent>
-          {step === 'REGISTER' ? (
-            <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 5 }} onSubmit={(e) => { e.preventDefault(); handleRegister(); }}>
-              <TextField
-                label="Full Name"
-                type="text"
-                placeholder="John Doe"
-                fullWidth
-                variant="outlined"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-              <TextField
-                label="Username"
-                type="text"
-                placeholder="johndoe"
-                fullWidth
-                variant="outlined"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-              <TextField
-                label="Email"
-                type="email"
-                placeholder="youremail@company.com"
-                fullWidth
-                variant="outlined"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <TextField
-                label="Password"
-                type={showPassword ? 'text' : 'password'}
-                fullWidth
-                variant="outlined"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <Button
-                type="submit"
-                variant="outlined"
-                color="primary"
-                size="large"
-                fullWidth
-                disabled={loading}
-                sx={{ mt: 3, borderRadius: 3, py: 1.5, borderWidth: 2 }}
-              >
-                <Typography variant="h6" fontWeight="bold">
-                  {loading ? "Registering..." : "Register"}
-                </Typography>
-              </Button>
-            </Box>
-          ) : (
-            <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 5 }} onSubmit={(e) => { e.preventDefault(); handleConfirmSignUp(); }}>
-              <TextField
-                label="Confirmation Code"
-                type="text"
-                placeholder="123456"
-                fullWidth
-                variant="outlined"
-                value={confirmationCode}
-                onChange={(e) => setConfirmationCode(e.target.value)}
-                required
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="large"
-                fullWidth
-                disabled={loading}
-                sx={{ mt: 3, borderRadius: 3, py: 1.5 }}
-              >
-                <Typography variant="h6" fontWeight="bold">
-                  {loading ? "Confirming..." : "Confirm Account"}
-                </Typography>
-              </Button>
-              <Button
-                variant="text"
-                color="secondary"
-                onClick={() => setStep('REGISTER')}
-                disabled={loading}
-              >
-                Back to Registration
-              </Button>
-            </Box>
-          )}
-        </CardContent>
-      </Card>
+    <Box sx={{ width: "100%", maxWidth: 440 }}>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" fontWeight={700} gutterBottom>
+          Buat Akun Baru
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Daftar untuk mulai mengelola kurikulum OBE program studi Anda.
+        </Typography>
+      </Box>
+
+      <Box
+        component="form"
+        sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleRegister();
+        }}
+      >
+        <TextField
+          label="Nama Lengkap"
+          type="text"
+          placeholder="John Doe"
+          fullWidth
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          autoComplete="name"
+        />
+        <TextField
+          label="Email"
+          type="email"
+          placeholder="nama@kampus.ac.id"
+          fullWidth
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          autoComplete="email"
+        />
+        <TextField
+          label="Password"
+          type={showPassword ? "text" : "password"}
+          fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          autoComplete="new-password"
+          helperText="Minimal 8 karakter"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          size="large"
+          fullWidth
+          disabled={loading}
+          sx={{ mt: 1 }}
+        >
+          {loading ? "Mendaftarkan..." : "Daftar"}
+        </Button>
+      </Box>
+
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 4, textAlign: "center" }}>
+        Sudah punya akun?{" "}
+        <MuiLink component={Link} href={ROUTES.SIGN_IN} underline="hover" fontWeight={600}>
+          Masuk di sini
+        </MuiLink>
+      </Typography>
     </Box>
   );
 };
