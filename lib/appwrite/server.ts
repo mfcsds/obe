@@ -1,6 +1,10 @@
-"use server";
+// Modul ini hanya boleh dieksekusi di server. Memakai `server-only` alih-alih
+// directive "use server" karena directive tersebut akan mengekspos setiap
+// fungsi yang diekspor sebagai endpoint HTTP yang bisa dipanggil dari browser
+// tanpa melewati pengecekan otorisasi di lapisan action (OWASP A01).
+import "server-only";
 
-import { Client, Account, Users } from "node-appwrite";
+import { Client, Account, Users, TablesDB } from "node-appwrite";
 import { cookies } from "next/headers";
 import { appwriteConfig, APPWRITE_SESSION_COOKIE } from "./config";
 import type { Role } from "@/types/role";
@@ -55,6 +59,9 @@ export async function createAdminClient() {
     },
     get users() {
       return new Users(client);
+    },
+    get tablesDB() {
+      return new TablesDB(client);
     },
   };
 }

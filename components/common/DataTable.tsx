@@ -26,6 +26,10 @@ export interface DataTableColumn<T> {
   label: string;
   align?: "left" | "center" | "right";
   render?: (row: T) => ReactNode;
+  /** Lebar minimum kolom (px), dipakai saat isi sel butuh ruang lebih (mis. teks panjang atau dua baris kode+nama). */
+  minWidth?: number;
+  /** Lebar maksimum kolom (px), untuk membatasi kolom teks panjang agar tabel tetap proporsional. */
+  maxWidth?: number;
 }
 
 interface DataTableProps<T> {
@@ -39,6 +43,14 @@ interface DataTableProps<T> {
   emptyMessage?: string;
   /** Bungkus tabel dengan Paper + border, sesuai konvensi list page. */
   withPaper?: boolean;
+  /**
+   * Kepadatan baris. `false` (default) memakai padding standar MUI, cocok
+   * untuk tabel data utama. `true` memampatkan padding vertikal sel,
+   * cocok untuk daftar referensi singkat (mis. kategori/setting) yang
+   * berdampingan dengan konten lain di halaman yang sama, agar tidak
+   * memakan ruang vertikal berlebihan.
+   */
+  dense?: boolean;
 }
 
 /**
@@ -66,10 +78,13 @@ export function DataTable<T>({
   maxHeight,
   emptyMessage = "Tidak ada data untuk ditampilkan.",
   withPaper = false,
+  dense = false,
 }: DataTableProps<T>) {
+  const cellPaddingSx = dense ? { py: 0.75 } : undefined;
+
   const table = (
     <TableContainer sx={maxHeight ? { maxHeight } : undefined}>
-      <Table stickyHeader>
+      <Table stickyHeader size={dense ? "small" : "medium"}>
         <TableHead>
           <TableRow>
             {columns.map((column) => (
@@ -80,6 +95,9 @@ export function DataTable<T>({
                   bgcolor: "primary.main",
                   color: "primary.contrastText",
                   fontWeight: "bold",
+                  minWidth: column.minWidth,
+                  maxWidth: column.maxWidth,
+                  ...cellPaddingSx,
                 }}
               >
                 {column.label}
@@ -102,7 +120,11 @@ export function DataTable<T>({
             rows.map((row) => (
               <TableRow key={getRowKey(row)} hover>
                 {columns.map((column) => (
-                  <TableCell key={column.key} align={column.align ?? "left"}>
+                  <TableCell
+                    key={column.key}
+                    align={column.align ?? "left"}
+                    sx={{ minWidth: column.minWidth, maxWidth: column.maxWidth, ...cellPaddingSx }}
+                  >
                     {column.render
                       ? column.render(row)
                       : String((row as Record<string, unknown>)[column.key] ?? "")}

@@ -67,7 +67,7 @@ warna kustom baru.
 - Status ditampilkan sebagai `Chip` dengan warna semantik (`success` = aktif,
   `default`/`warning` = non-aktif atau perhatian, `error` = bermasalah).
 
-### Dialog/Form Input Panjang (AddDosenDialog, dll)
+### Dialog/Form Input Panjang
 - Gunakan `Stepper` untuk form multi-bagian yang panjang.
 - Section di dalam step diberi `Typography variant="h6" color="primary"` +
   `Divider` sebagai pemisah visual sebelum field-field terkait.

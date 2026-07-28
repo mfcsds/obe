@@ -1,344 +1,182 @@
 "use client";
 
+import { Box, Alert, Stack, Typography } from "@mui/material";
+import { TabHeader } from "@/components/kurikulum/TabHeader";
+import { DataTable, type DataTableColumn } from "@/components/common/DataTable";
 import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Paper,
-} from '@mui/material';
-import { useState } from 'react';
+  toPemetaanKey,
+  type BahanKajian,
+  type Cpl,
+  type MataKuliah,
+} from "@/types/kurikulum-detail";
 
-const cplList = ['CPL01', 'CPL02', 'CPL03', 'CPL04', 'CPL05', 'CPL06', 'CPL07', 'CPL08', 'CPL09', 'CPL10', 'CPL11', 'CPL12', 'CPL13'];
+interface PemetaanCPLBKMKTabProps {
+  cplList: Cpl[];
+  bahanKajianList: BahanKajian[];
+  mataKuliahList: MataKuliah[];
+  /** Kunci pemetaan Bahan Kajian→Mata Kuliah yang aktif (tab 6). */
+  bkMkKeys: string[];
+  /** Kunci pemetaan Mata Kuliah→CPL yang aktif (tab 7). */
+  mkCplKeys: string[];
+}
 
-const initialMapping = [
-  {
-    kode: 'BK01', nama: 'Social Issues and Professional Practice', mapping: {
-      CPL01: 'MK07, MK08, MK38, MK39, MK40, MK41, MK42, MK43, MK44, MK45',
-      CPL02: 'MK07, MK08, MK38, MK39, MK40, MK41, MK42, MK43, MK44, MK45',
-      CPL03: 'MK07, MK08, MK38, MK39, MK40, MK41, MK42, MK43, MK44, MK45',
-      CPL04: '',
-      CPL05: '',
-      CPL06: '',
-      CPL07: 'v',
-      CPL08: 'v',
-      CPL09: '',
-      CPL10: '',
-      CPL11: '',
-      CPL12: '',
-      CPL13: 'MK40, MK41, MK42, MK43, MK44, MK45'
-    }
-  },
-  {
-    kode: 'BK02', nama: 'Project Management', mapping: {
-      CPL01: '',
-      CPL02: '',
-      CPL03: '',
-      CPL04: '',
-      CPL05: 'v',
-      CPL06: '',
-      CPL07: 'v',
-      CPL08: 'v',
-      CPL09: '',
-      CPL10: '',
-      CPL11: '',
-      CPL12: '',
-      CPL13: 'MK40, MK41, MK42, MK43, MK44, MK45'
-    }
-  },
-  {
-    kode: 'BK03', nama: 'User Experience Design', mapping: {
-      CPL01: '',
-      CPL02: '',
-      CPL03: '',
-      CPL04: '',
-      CPL05: 'v',
-      CPL06: '',
-      CPL07: '',
-      CPL08: 'v',
-      CPL09: '',
-      CPL10: 'v',
-      CPL11: '',
-      CPL12: '',
-      CPL13: ''
-    }
-  },
-  {
-    kode: 'BK04', nama: 'Data and Information Management', mapping: {
-      CPL01: '',
-      CPL02: '',
-      CPL03: '',
-      CPL04: '',
-      CPL05: '',
-      CPL06: '',
-      CPL07: 'v',
-      CPL08: 'v',
-      CPL09: '',
-      CPL10: '',
-      CPL11: '',
-      CPL12: '',
-      CPL13: ''
-    }
-  },
-  {
-    kode: 'BK05', nama: 'Parallel and Distributed Computing', mapping: {
-      CPL01: '',
-      CPL02: '',
-      CPL03: '',
-      CPL04: '',
-      CPL05: '',
-      CPL06: '',
-      CPL07: '',
-      CPL08: 'v',
-      CPL09: '',
-      CPL10: '',
-      CPL11: '',
-      CPL12: '',
-      CPL13: ''
-    }
-  },
-  {
-    kode: 'BK06', nama: 'Computer Networks', mapping: {
-      CPL01: '',
-      CPL02: '',
-      CPL03: '',
-      CPL04: 'MK05',
-      CPL05: '',
-      CPL06: '',
-      CPL07: '',
-      CPL08: 'MK05',
-      CPL09: '',
-      CPL10: '',
-      CPL11: '',
-      CPL12: '',
-      CPL13: ''
-    }
-  },
-  {
-    kode: 'BK07', nama: 'Software Design', mapping: {
-      CPL01: '',
-      CPL02: '',
-      CPL03: '',
-      CPL04: '',
-      CPL05: '',
-      CPL06: '',
-      CPL07: '',
-      CPL08: 'v',
-      CPL09: '',
-      CPL10: '',
-      CPL11: 'v',
-      CPL12: '',
-      CPL13: ''
-    }
-  },
-  {
-    kode: 'BK08', nama: 'Operating Systems', mapping: {
-      CPL01: '',
-      CPL02: '',
-      CPL03: '',
-      CPL04: 'MK10, MK14',
-      CPL05: '',
-      CPL06: 'MK10, MK14',
-      CPL07: '',
-      CPL08: 'MK10, MK14',
-      CPL09: 'MK10, MK14',
-      CPL10: '',
-      CPL11: '',
-      CPL12: '',
-      CPL13: ''
-    }
-  },
-  {
-    kode: 'BK09', nama: 'Data Structures, Algorithms and Complexity', mapping: {
-      CPL01: '',
-      CPL02: '',
-      CPL03: '',
-      CPL04: 'MK01, MK02',
-      CPL05: '',
-      CPL06: '',
-      CPL07: '',
-      CPL08: 'MK01, MK02',
-      CPL09: 'MK01, MK02',
-      CPL10: '',
-      CPL11: '',
-      CPL12: '',
-      CPL13: ''
-    }
-  },
-];
+/** Satu baris matriks: satu Bahan Kajian, dengan MK penghubung ke setiap CPL. */
+interface BarisMatriks {
+  bahanKajian: BahanKajian;
+  /** Mata kuliah penghubung per CPL, dikunci oleh ID CPL. */
+  mataKuliahPerCpl: Map<string, MataKuliah[]>;
+}
 
-export default function PemetaanCPLBKMKTab() {
-  const [mappingData, setMappingData] = useState(initialMapping);
+/**
+ * Tab Keterkaitan CPL, Bahan Kajian, dan Mata Kuliah.
+ *
+ * Ditampilkan sebagai matriks: baris = Bahan Kajian, kolom = CPL, isi sel =
+ * kode mata kuliah yang menjadi penghubung nyata antara keduanya. Sebuah
+ * mata kuliah dianggap menjembatani satu pasang (BK, CPL) bila mata kuliah
+ * tersebut sudah dipetakan ke BK itu (tab "Pemetaan Bahan Kajian dan Mata
+ * Kuliah") DAN dibebankan CPL itu (tab "Pembebanan CPL pada Mata Kuliah").
+ *
+ * Seluruhnya data turunan (read-only) — tidak ada input baru di tab ini,
+ * hanya rekap otomatis dari dua pemetaan yang sudah diisi kaprodi.
+ */
+export default function PemetaanCPLBKMKTab({
+  cplList,
+  bahanKajianList,
+  mataKuliahList,
+  bkMkKeys,
+  mkCplKeys,
+}: PemetaanCPLBKMKTabProps) {
+  const bkMk = new Set(bkMkKeys);
+  const mkCpl = new Set(mkCplKeys);
 
-  const handleChange = (bkIndex: number, cpl: string, value: string) => {
-    const newData = [...mappingData];
-    (newData[bkIndex].mapping as any)[cpl] = value;
-    setMappingData(newData);
-  };
+  const rows: BarisMatriks[] = bahanKajianList.map((bahanKajian) => {
+    // Mata kuliah yang memuat bahan kajian ini (dari tab BK vs MK).
+    const mataKuliahBk = mataKuliahList.filter((mk) =>
+      bkMk.has(toPemetaanKey(bahanKajian.id, mk.id))
+    );
+
+    // Untuk setiap CPL, saring mata kuliah tersebut menjadi hanya yang juga
+    // dibebankan CPL itu (dari tab Pembebanan CPL pada Mata Kuliah).
+    const mataKuliahPerCpl = new Map<string, MataKuliah[]>();
+    for (const cpl of cplList) {
+      const penghubung = mataKuliahBk.filter((mk) => mkCpl.has(toPemetaanKey(mk.id, cpl.id)));
+      if (penghubung.length > 0) {
+        mataKuliahPerCpl.set(cpl.id, penghubung);
+      }
+    }
+
+    return { bahanKajian, mataKuliahPerCpl };
+  });
+
+  const bkBelumTerhubung = rows.filter((row) => row.mataKuliahPerCpl.size === 0).length;
+  const hasPrerequisites = bahanKajianList.length > 0 && cplList.length > 0;
+
+  const columns: DataTableColumn<BarisMatriks>[] = [
+    {
+      key: "no",
+      label: "No",
+      align: "center",
+      render: (row) => rows.indexOf(row) + 1,
+    },
+    {
+      key: "bahanKajian",
+      label: "Bahan Kajian",
+      minWidth: 320,
+      maxWidth: 320,
+      render: (row) => (
+        <Typography
+          variant="body2"
+          sx={{ whiteSpace: "normal", fontWeight: 500, py: 0.5 }}
+        >
+          {row.bahanKajian.nama}
+        </Typography>
+      ),
+    },
+    ...cplList.map(
+      (cpl): DataTableColumn<BarisMatriks> => ({
+        key: `cpl-${cpl.id}`,
+        label: cpl.kode,
+        align: "center",
+        minWidth: 168,
+        maxWidth: 168,
+        render: (row) => {
+          const penghubung = row.mataKuliahPerCpl.get(cpl.id) ?? [];
+
+          if (penghubung.length === 0) {
+            return (
+              <Box component="span" sx={{ color: "text.disabled" }}>
+                &ndash;
+              </Box>
+            );
+          }
+
+          return (
+            <Stack spacing={1} alignItems="stretch" sx={{ py: 0.75 }}>
+              {penghubung.map((mk) => (
+                <Box
+                  key={mk.id}
+                  sx={{
+                    px: 1.5,
+                    py: 1,
+                    borderRadius: 1.5,
+                    bgcolor: "rgba(245, 158, 11, 0.12)",
+                    border: "1px solid",
+                    borderColor: "primary.main",
+                    textAlign: "left",
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    component="div"
+                    sx={{ fontWeight: 700, fontSize: "0.75rem", lineHeight: 1.4 }}
+                  >
+                    {mk.kode}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    component="div"
+                    color="text.secondary"
+                    sx={{ fontSize: "0.6875rem", lineHeight: 1.4, mt: 0.5 }}
+                  >
+                    {mk.nama} ({mk.sks} SKS)
+                  </Typography>
+                </Box>
+              ))}
+            </Stack>
+          );
+        },
+      })
+    ),
+  ];
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ mb: 3 }}>
-        <Box sx={{ typography: 'h5', fontWeight: 'bold', color: 'primary.main' }}>CPL vs BK vs Mata Kuliah</Box>
-        <Box sx={{ typography: 'body1', color: 'text.secondary', mt: 1 }}>
-          Pemetaan komprehensif antara CPL, Bahan Kajian, dan Mata Kuliah.
-          Isi sel dengan kode mata kuliah yang relevan.
-        </Box>
-      </Box>
+    <Box>
+      <TabHeader
+        title="Keterkaitan Capaian Pembelajaran Lulusan, Bahan Kajian, dan Mata Kuliah"
+        description="Kode mata kuliah yang menghubungkan setiap bahan kajian dengan capaian pembelajaran lulusan, disusun otomatis berdasarkan pemetaan pada tahap sebelumnya."
+        badges={
+          bkBelumTerhubung > 0
+            ? [`${bkBelumTerhubung} bahan kajian belum terhubung ke CPL`]
+            : [`${rows.length} bahan kajian terhubung`]
+        }
+      />
 
-      <Paper elevation={2} sx={{ width: '100%', overflow: 'hidden', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
-        <TableContainer sx={{ maxHeight: '70vh' }}>
-          <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { borderRight: '1px solid', borderColor: 'divider' } }}>
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  rowSpan={2}
-                  sx={{
-                    minWidth: 200,
-                    position: 'sticky',
-                    left: 0,
-                    bgcolor: 'primary.main',
-                    color: 'primary.contrastText',
-                    zIndex: 4,
-                    fontWeight: 'bold',
-                    borderRight: '2px solid',
-                    borderColor: 'primary.dark'
-                  }}
-                >
-                  Bahan Kajian
-                </TableCell>
-                <TableCell
-                  rowSpan={2}
-                  align="center"
-                  sx={{
-                    minWidth: 80,
-                    position: 'sticky',
-                    left: 200,
-                    bgcolor: 'primary.main',
-                    color: 'primary.contrastText',
-                    zIndex: 4,
-                    fontWeight: 'bold',
-                    borderRight: '2px solid',
-                    borderColor: 'primary.dark',
-                    boxShadow: '4px 0 8px -2px rgba(0,0,0,0.1)'
-                  }}
-                >
-                  Kode BK
-                </TableCell>
-                <TableCell
-                  colSpan={cplList.length}
-                  align="center"
-                  sx={{
-                    bgcolor: 'primary.light',
-                    color: 'primary.contrastText',
-                    fontWeight: 'bold',
-                    borderBottom: '1px solid',
-                    borderColor: 'primary.main'
-                  }}
-                >
-                  Capaian Pembelajaran Lulusan (CPL)
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                {cplList.map((cpl) => (
-                  <TableCell
-                    key={cpl}
-                    align="center"
-                    sx={{
-                      minWidth: 80,
-                      bgcolor: 'background.paper',
-                      fontWeight: 'bold',
-                      color: 'text.primary',
-                      borderBottom: '2px solid',
-                      borderColor: 'divider'
-                    }}
-                  >
-                    {cpl}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {mappingData.map((item, index) => (
-                <TableRow
-                  key={item.kode}
-                  hover
-                  sx={{
-                    '&:nth-of-type(odd)': { bgcolor: 'action.hover' },
-                    '&:hover': { bgcolor: 'action.selected' }
-                  }}
-                >
-                  <TableCell
-                    sx={{
-                      position: 'sticky',
-                      left: 0,
-                      bgcolor: 'background.paper',
-                      zIndex: 2,
-                      fontWeight: 500,
-                      borderRight: '2px solid',
-                      borderColor: 'divider'
-                    }}
-                  >
-                    {item.nama}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    sx={{
-                      position: 'sticky',
-                      left: 200,
-                      bgcolor: 'background.paper',
-                      zIndex: 2,
-                      borderRight: '2px solid',
-                      borderColor: 'divider',
-                      boxShadow: '4px 0 8px -2px rgba(0,0,0,0.05)'
-                    }}
-                  >
-                    {item.kode}
-                  </TableCell>
-                  {cplList.map((cpl) => (
-                    <TableCell
-                      key={cpl}
-                      align="center"
-                      sx={{
-                        p: 1,
-                        minWidth: 80
-                      }}
-                    >
-                      <TextField
-                        fullWidth
-                        size="small"
-                        variant="outlined"
-                        value={(item.mapping as any)[cpl]}
-                        onChange={(e) => handleChange(index, cpl, e.target.value)}
-                        placeholder="-"
-                        sx={{
-                          '& .MuiInputBase-root': {
-                            fontSize: '0.875rem',
-                            bgcolor: 'background.paper',
-                          },
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'transparent'
-                          },
-                          '&:hover .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'action.active'
-                          },
-                          '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'primary.main'
-                          }
-                        }}
-                      />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+      {!hasPrerequisites ? (
+        <Alert severity="info">
+          Lengkapi data Bahan Kajian dan Capaian Pembelajaran Lulusan terlebih
+          dahulu, lalu isi pemetaan pada tab BK vs Mata Kuliah dan Pembebanan
+          CPL pada Mata Kuliah.
+        </Alert>
+      ) : (
+        <DataTable
+          columns={columns}
+          rows={rows}
+          getRowKey={(row) => row.bahanKajian.id}
+          withPaper
+          maxHeight="65vh"
+          emptyMessage="Belum ada data pemetaan."
+        />
+      )}
     </Box>
   );
 }
